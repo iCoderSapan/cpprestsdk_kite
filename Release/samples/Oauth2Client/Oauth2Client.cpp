@@ -292,33 +292,6 @@ protected:
     }
 };
 
-//
-// Specialized class for Kite Zerodha OAuth 2.0 session.
-//
-class kite_session_sample : public oauth2_session_sample
-{
-public:
-    kite_session_sample()
-        : oauth2_session_sample(U("Dropbox"),
-                                s_dropbox_key,
-                                s_dropbox_secret,
-                                U("https://www.dropbox.com/1/oauth2/authorize"),
-                                U("https://api.dropbox.com/1/oauth2/token"),
-                                U("http://localhost:8889/"))
-    {
-        // Kite uses "default" OAuth 2.0 settings.
-    }
-
-protected:
-    void run_internal() override
-    {
-        http_client api(U("https://api.dropbox.com/1/"), m_http_config);
-        ucout << "Requesting account information:" << std::endl;
-        ucout << "Information: " << api.request(methods::GET, U("account/info")).get().extract_json().get()
-              << std::endl;
-    }
-};
-
 #ifdef _WIN32
 int wmain(int argc, wchar_t* argv[])
 #else
@@ -327,14 +300,14 @@ int main(int argc, char* argv[])
 {
     ucout << "Running OAuth 2.0 client sample..." << std::endl;
 
-/*    linkedin_session_sample linkedin;
+    linkedin_session_sample linkedin;
     dropbox_session_sample dropbox;
     live_session_sample live;
 
     linkedin.run();
     dropbox.run();
     live.run();
-*/
+
     ucout << "Done." << std::endl;
     return 0;
 }
