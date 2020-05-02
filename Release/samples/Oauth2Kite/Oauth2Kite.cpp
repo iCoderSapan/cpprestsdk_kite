@@ -233,37 +233,6 @@ protected:
     }
 };
 
-//
-// Specialized class for LinkedIn OAuth 2.0 session.
-//
-class linkedin_session_sample : public oauth2_session_sample
-{
-public:
-    linkedin_session_sample()
-        : oauth2_session_sample(U("LinkedIn"),
-                                s_linkedin_key,
-                                s_linkedin_secret,
-                                U("https://www.linkedin.com/uas/oauth2/authorization"),
-                                U("https://www.linkedin.com/uas/oauth2/accessToken"),
-                                U("http://localhost:8888/"))
-    {
-        // LinkedIn doesn't use bearer auth.
-        m_oauth2_config.set_bearer_auth(false);
-        // Also doesn't use HTTP Basic for token endpoint authentication.
-        m_oauth2_config.set_http_basic_auth(false);
-        // Also doesn't use the common "access_token", but "oauth2_access_token".
-        m_oauth2_config.set_access_token_key(U("oauth2_access_token"));
-    }
-
-protected:
-    void run_internal() override
-    {
-        http_client api(U("https://api.linkedin.com/v1/people/"), m_http_config);
-        ucout << "Requesting account information:" << std::endl;
-        ucout << "Information: " << api.request(methods::GET, U("~?format=json")).get().extract_json().get()
-              << std::endl;
-    }
-};
 
 //
 // Specialized class for Microsoft Live Connect OAuth 2.0 session.
@@ -300,10 +269,10 @@ class kite_session_sample : public oauth2_session_sample
 public:
     kite_session_sample()
         : oauth2_session_sample(U("Dropbox"),
-                                s_dropbox_key,
-                                s_dropbox_secret,
-                                U("https://www.dropbox.com/1/oauth2/authorize"),
-                                U("https://api.dropbox.com/1/oauth2/token"),
+                                "utmcr52rmqeze8sc",
+                                "443isdhujy5d45jw85b4ldr0wmbg07me",
+                                U("https://kite.trade/connect/login"),
+                                U("https://api.kite.trade/session/token"),
                                 U("http://localhost:8889/"))
     {
         // Kite uses "default" OAuth 2.0 settings.
@@ -312,9 +281,9 @@ public:
 protected:
     void run_internal() override
     {
-        http_client api(U("https://api.dropbox.com/1/"), m_http_config);
+        http_client api(U("https://api.kite.trade/"), m_http_config);
         ucout << "Requesting account information:" << std::endl;
-        ucout << "Information: " << api.request(methods::GET, U("account/info")).get().extract_json().get()
+        ucout << "Information: " << api.request(methods::GET, U("/user/profile")).get().extract_json().get()
               << std::endl;
     }
 };
@@ -335,6 +304,9 @@ int main(int argc, char* argv[])
     dropbox.run();
     live.run();
 */
+    kite_session_sample kite;
+    kite.run();
+    getchar();
     ucout << "Done." << std::endl;
     return 0;
 }
