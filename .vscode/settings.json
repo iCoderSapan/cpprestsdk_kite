@@ -16,5 +16,29 @@
         "pplx",
         "rdpos",
         "rgpsz"
-    ]
+    ],
+    "files.associations": {
+        "atomic": "cpp",
+        "*.dat": "cpp",
+        "ostream": "cpp",
+        "iostream": "cpp",
+        "*.ipp": "cpp",
+        "condition_variable": "cpp",
+        "future": "cpp",
+        "*.tcc": "cpp",
+        "array": "cpp",
+        "memory": "cpp",
+        "istream": "cpp",
+        "functional": "cpp",
+        "tuple": "cpp",
+        "utility": "cpp",
+        "variant": "cpp",
+        "strstream": "cpp",
+        "bitset": "cpp",
+        "random": "cpp",
+        "new": "cpp",
+        "sstream": "cpp",
+        "streambuf": "cpp",
+        "type_traits": "cpp"
+    }
 }

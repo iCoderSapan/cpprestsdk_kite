@@ -56,7 +56,6 @@ std::string sha256(const std::string str)
 
 int main(int argc, char* argv[]) 
 { 
-#if 0      
    auto fileStream = std::make_shared<ostream>(); 
    // Open stream to output file. 
    pplx::task<void> requestTask =  
@@ -76,16 +75,13 @@ int main(int argc, char* argv[])
          // Build request URI and start the request. 
           uri_builder builder(U("/session/token"));
           //std::cout<<builder.to_string()<<"\n"<<body_data<<std::endl;
-         pplx::task<http_response> resp = client.request(methods::POST, utility::conversions::to_utf8string(builder.to_string()), req_string,
-                               utility::conversions::to_utf8string("application/x-www-form-urlencoded"));
          return client.request(methods::POST, utility::conversions::to_utf8string(builder.to_string()), req_string,
                                utility::conversions::to_utf8string("application/x-www-form-urlencoded"));
  
    }).then([=](http_response response) 
    { 
          printf("Received response status code:%un",  
-                                    response.status_code());
-         std::cout<<"Contect-type: "<<response.headers().content_type()<<std::endl;
+                                    response.status_code()); 
              return response.body(). 
                            read_to_end(fileStream->streambuf()); 
    }).then([=](size_t total){
@@ -103,50 +99,9 @@ int main(int argc, char* argv[])
    } 
    catch (const std::exception &e) { 
          printf("Error exception:%sn", e.what()); 
-   }
-#endif
-#if 1
-std::string api_key = utility::conversions::to_utf8string("utmcr52rmqeze8sc");
-std::string api_secret = utility::conversions::to_utf8string("443isdhujy5d45jw85b4ldr0wmbg07me");
-std::string request_token= utility::conversions::to_utf8string("xxx");
-http_client client(U("https://api.kite.trade")); 
+   } 
 
-/*
-std::string checksum=sha256(api_key + request_token + api_secret);
-std::string req_string("api_key="+api_key+"&request_token="+request_token+"&checksum="+checksum);
+   getchar(); 
+   return 0; 
+} 
 
-// Send request to the Kite and get the response
-// Build request URI and start the request. 
-//uri_builder builder(U("/session/token"));
-uri_builder builder;
-builder.append_query(U("api_key"), api_key);
-builder.append_query(U("api_secret"), api_secret);
-builder.append_query(U("request_token"), request_token);
-std::string url_data(builder.to_string());
-std::cout<<"+++++++++++:"<<url_data.erase(0,2);
-std::cout<<"Response sent:\n";
-//std::cout<<builder.to_string()<<"\n"<<body_data<<std::endl;
-*/
-http_request request(methods::GET);
-request.headers().add("User-Agent", "Testing");
-request.headers().add("X-Kite-Version", "3");
-request.headers().add(header_names::authorization, "token " + api_key + ":" + "x0lpWPjtq3cE9ELZDiohkO8L71DfHZE6");
-request.set_request_uri("/user/margin");
-pplx::task<web::http::http_response> resp =  client.request(request);//utility::conversions::to_utf8string("application/x-www-form-urlencoded"));
-try { 
-        //-- All Taskss will get triggered here 
-        resp.wait();
-        std::cout<<"Response received\n";
-        std::string str("சப்பங்கிமரச்");
-        std::cout<<str<<std::endl;
-        //resp.get().extract_utf8string()
-        json::value obj = json::value::parse(resp.get().extract_string().get());
-        std::cerr<<"data: "<<obj["data"]["equity"]["net"].as_double();
-} 
-catch (const std::exception &e) { 
-        printf("Error exception:%sn", e.what()); 
-}
-#endif
-getchar();
-return 0; 
-} 
