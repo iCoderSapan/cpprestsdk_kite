@@ -6,7 +6,7 @@ using System.Net;
 using System.Collections;
 using System.Reflection;
 */
-#include <string>
+#include <std::string>
 #include <cpprest/http_client.h> 
 #include <cpprest/filestream.h> 
 //----- Some standard C++ headers emitted for brevity
@@ -18,17 +18,20 @@ using System.Reflection;
 
 #include <iomanip>
 #include <sstream>
-#include <string>
+#include <std::string>
 #include <iostream>
 #include <openssl/sha.h>
 #include <memory>
+
+#include "KiteTypes.cpp"
+
 //////////////////////////////////////////////// 
 // A Simple HTTP Client to Demonstrate  
 // REST SDK Client programming model 
 // The Toy sample shows how one can read  
 // contents of a web page 
 // 
-using namespace utility;  // Common utilities like string conversions 
+using namespace utility;  // Common utilities like std::string conversions 
 using namespace web;      // Common features like URIs. 
 using namespace web::http;// Common HTTP functionality 
 using namespace web::http::client;// HTTP client features 
@@ -39,6 +42,7 @@ using namespace std;      // Use std c++ features
 
 namespace KiteConnect
 {
+    using ParamType = vector<pair<std::string, std::string>>;
     /// <summary>
     /// The API client class. In production, you may initialize a single instance of this class per `APIKey`.
     /// </summary>
@@ -47,12 +51,12 @@ namespace KiteConnect
         // Default root API endpoint. It's possible to
         // override this by passing the `Root` parameter during initialisation.
         private:  
-            string _root = "https://api.kite.trade";
-            string _login = "https://kite.trade/connect/login";
+            std::string _root = "https://api.kite.trade";
+            std::string _login = "https://kite.trade/connect/login";
             String USER_AGENT = "SapanClient";
 
-            string _apiKey;
-            string _accessToken;
+            std::string _apiKey;
+            std::string _accessToken;
             bool _enableLogging;
             shared_ptr<web::web_proxy> _proxy;
             std::chrono::seconds _timeout;
@@ -61,7 +65,7 @@ namespace KiteConnect
 
             //private Cache cache = new Cache();
 
-            const map<string, string> _routes = 
+            const map<std::string, std::string> _routes = 
             {
                 {"parameters", "/parameters"},
                 {"api.token", "/session/token"},
@@ -127,7 +131,7 @@ namespace KiteConnect
         /// <param name="Timeout">Time in seconds for which  the API client will wait for a request to complete before it fails</param>
         /// <param name="Proxy">To set proxy for http request. Should be an object of WebProxy.</param>
         /// <param name="Pool">Number of connections to server. Client will reuse the connections if they are alive.</param>
-        Kite(string APIKey, string accessToken = null, string root = null, bool debug = false, int timeout = 7,  shared_ptr<web::web_proxy> proxy = nullptr, int Pool = 2)
+        Kite(std::string APIKey, std::string accessToken = null, std::string root = null, bool debug = false, int timeout = 7,  shared_ptr<web::web_proxy> proxy = nullptr, int Pool = 2)
         {
             _accessToken = accessToken;
             _apiKey = APIKey;
@@ -178,7 +182,7 @@ namespace KiteConnect
         /// Set the `AccessToken` received after a successful authentication.
         /// </summary>
         /// <param name="AccessToken">Access token for the session.</param>
-        void SetAccessToken(string accessToken)
+        void SetAccessToken(std::string accessToken)
         {
             _accessToken = accessToken;
         }
@@ -187,9 +191,9 @@ namespace KiteConnect
         /// Get the remote login url to which a user should be redirected to initiate the login flow.
         /// </summary>
         /// <returns>Login url to authenticate the user.</returns>
-        string GetLoginURL()
+        std::string GetLoginURL()
         {
-            stringstream url;
+            std::stringstream url;
             url<<_login<<"?api_key="<<_apiKey<<"&v=3";
             return url.str();
         }
@@ -203,18 +207,18 @@ namespace KiteConnect
         /// <param name="RequestToken">Token obtained from the GET paramers after a successful login redirect.</param>
         /// <param name="AppSecret">API secret issued with the API key.</param>
         /// <returns>User structure with tokens and profile data</returns>
-        User GenerateSession(string RequestToken, string AppSecret)
+        User GenerateSession(std::string RequestToken, std::string AppSecret)
         {
-            string checksum = Utils:::SHA256(_apiKey + RequestToken + AppSecret);
+            std::string checksum = Utils:::SHA256(_apiKey + RequestToken + AppSecret);
 
-            map<string, string> data{
+            map<std::string, std::string> data{
                 {"api_key", _apiKey},
                 {"request_token", RequestToken},
                 {"checksum", checksum}
             };
-            shared_ptr<map<string, string>> param = make_shared<map<string, string>>(data);
+            shared_ptr<map<std::string, std::string>> param = make_shared<map<std::string, std::string>>(data);
 
-            string jsonData = Post("api.token", param);
+            std::string jsonData = Post("api.token", param);
             return User(jsonData);
         }
 
@@ -222,13 +226,13 @@ namespace KiteConnect
         /// Kill the session by invalidating the access token
         /// </summary>
         /// <param name="AccessToken">Access token to invalidate. Default is the active access token.</param>
-        /// <returns>Json response in the form of nested string dictionary.</returns>
-        std::string InvalidateAccessToken(string AccessToken = null)
+        /// <returns>Json response in the form of nested std::string dictionary.</returns>
+        std::string InvalidateAccessToken(std::string AccessToken = null)
         {
-            map<string, string> param;
+            map<std::string, std::string> param;
 
-            Utils:::AddIfNotNull(param, "api_key", _apiKey);
-            Utils:::AddIfNotNull(param, "access_token", AccessToken);
+            Utils::AddIfNotNull(param, "api_key", _apiKey);
+            Utils::AddIfNotNull(param, "access_token", AccessToken);
 
             return Delete("api.token", param);
         }
@@ -237,10 +241,10 @@ namespace KiteConnect
         /// Invalidates RefreshToken
         /// </summary>
         /// <param name="RefreshToken">RefreshToken to invalidate</param>
-        /// <returns>Json response in the form of nested string dictionary.</returns>
-        std::string InvalidateRefreshToken(string RefreshToken)
+        /// <returns>Json response in the form of nested std::string dictionary.</returns>
+        std::string InvalidateRefreshToken(std::string RefreshToken)
         {
-            map<string, string> param;
+            map<std::string, std::string> param;
 
             Utils:::AddIfNotNull(param, "api_key", _apiKey);
             Utils:::AddIfNotNull(param, "refresh_token", RefreshToken);
@@ -253,11 +257,11 @@ namespace KiteConnect
         /// <param name="RefreshToken">RefreshToken to renew the AccessToken.</param>
         /// <param name="AppSecret">API secret issued with the API key.</param>
         /// <returns>TokenRenewResponse that contains new AccessToken and RefreshToken.</returns>
-        TokenSet RenewAccessToken(string RefreshToken, string AppSecret)
+        TokenSet RenewAccessToken(std::string RefreshToken, std::string AppSecret)
         {
-            map<string, string> param;
+            map<std::string, std::string> param;
 
-            string checksum = Utils:::SHA256(_apiKey + RefreshToken + AppSecret);
+            std::string checksum = Utils::SHA256(_apiKey + RefreshToken + AppSecret);
 
             Utils::AddIfNotNull(param, "api_key", _apiKey);
             Utils::AddIfNotNull(param, "refresh_token", RefreshToken);
@@ -282,12 +286,12 @@ namespace KiteConnect
         ///// </summary>
         ///// <param name="Segment">Tradingsymbols under this segment will be returned</param>
         ///// <returns>List of margins of intruments</returns>
-        //public List<InstrumentMargin> GetInstrumentsMargins(string Segment)
+        //public List<InstrumentMargin> GetInstrumentsMargins(std::string Segment)
         //{
-        //    var instrumentsMarginsData = Get("instrument.margins", new Dictionary<string, dynamic> { { "segment", Segment } });
+        //    var instrumentsMarginsData = Get("instrument.margins", new Dictionary<std::string, dynamic> { { "segment", Segment } });
 
         //    List<InstrumentMargin> instrumentsMargins = new List<InstrumentMargin>();
-        //    foreach (Dictionary<string, dynamic> item in instrumentsMarginsData["data"])
+        //    foreach (Dictionary<std::string, dynamic> item in instrumentsMarginsData["data"])
         //        instrumentsMargins.Add(new InstrumentMargin(item));
 
         //    return instrumentsMargins;
@@ -300,7 +304,7 @@ namespace KiteConnect
         UserMarginsResponse GetMargins()
         {
             std::string marginsData = Get("user.margins");
-            return UserMarginsResponse(marginsData["data"]);
+            return UserMarginsResponse(marginsData);
         }
 
         /// <summary>
@@ -308,10 +312,10 @@ namespace KiteConnect
         /// </summary>
         /// <param name="Segment">Trading segment (eg: equity or commodity)</param>
         /// <returns>Margins for specified segment.</returns>
-        UserMargin GetMargins(string Segment)
+        UserMargin GetMargins(std::string Segment)
         {
-            var userMarginData = Get("user.segment_margins", new Dictionary<string, dynamic> { { "segment", Segment } });
-            return new UserMargin(userMarginData["data"]);
+            std::string userMarginData = Get("user.segment_margins", map <std::string, std::string> { { "segment", Segment } });
+            return UserMargin(userMarginData);
         }
 
         /// <summary>
@@ -332,43 +336,44 @@ namespace KiteConnect
         /// <param name="TrailingStoploss">Incremental value by which stoploss price changes when market moves in your favor by the same incremental value from the entry price (optional)</param>
         /// <param name="Variety">You can place orders of varieties; regular orders, after market orders, cover orders etc. </param>
         /// <param name="Tag">An optional tag to apply to an order to identify it (alphanumeric, max 8 chars)</param>
-        /// <returns>Json response in the form of nested string dictionary.</returns>
-        Dictionary<string, dynamic> PlaceOrder(
-            string Exchange,
-            string TradingSymbol,
-            string TransactionType,
-            int Quantity,
-            decimal? Price = null,
-            string Product = null,
-            string OrderType = null,
-            string Validity = null,
-            int? DisclosedQuantity = null,
-            decimal? TriggerPrice = null,
-            decimal? SquareOffValue = null,
-            decimal? StoplossValue = null,
-            decimal? TrailingStoploss = null,
-            string Variety = Constants.VARIETY_REGULAR,
-            string Tag = "")
+        /// <returns>Json response in the form of nested std::string dictionary.</returns>
+        PlaceOrderResponse PlaceOrder(
+            std::string exchange,
+            std::string tradingSymbol,
+            std::string transactionType,
+            int quantity,
+            double price = 0.0,
+            std::string product = "",
+            std::string orderType = "",
+            std::string validity = "",
+            int disclosedQuantity = 0,
+            double triggerPrice = 0.0,
+            double squareOffValue = 0.0,
+            double stoplossValue = 0.0,
+            double trailingStoploss = 0.0,
+            std::string variety = Constants::VARIETY_REGULAR,
+            std::string tag = "")
         {
-            var param = new Dictionary<string, dynamic>();
+            map<std::string, std::string> param;
 
-            Utils::AddIfNotNull(param, "exchange", Exchange);
-            Utils::AddIfNotNull(param, "tradingsymbol", TradingSymbol);
-            Utils::AddIfNotNull(param, "transaction_type", TransactionType);
-            Utils::AddIfNotNull(param, "quantity", Quantity.ToString());
-            Utils::AddIfNotNull(param, "price", Price.ToString());
-            Utils::AddIfNotNull(param, "product", Product);
-            Utils::AddIfNotNull(param, "order_type", OrderType);
-            Utils::AddIfNotNull(param, "validity", Validity);
-            Utils::AddIfNotNull(param, "disclosed_quantity", DisclosedQuantity.ToString());
-            Utils::AddIfNotNull(param, "trigger_price", TriggerPrice.ToString());
-            Utils::AddIfNotNull(param, "squareoff", SquareOffValue.ToString());
-            Utils::AddIfNotNull(param, "stoploss", StoplossValue.ToString());
-            Utils::AddIfNotNull(param, "trailing_stoploss", TrailingStoploss.ToString());
-            Utils::AddIfNotNull(param, "variety", Variety);
-            Utils::AddIfNotNull(param, "tag", Tag);
+            Utils::AddIfNotNull(param, "exchange", exchange);
+            Utils::AddIfNotNull(param, "tradingsymbol", tradingSymbol);
+            Utils::AddIfNotNull(param, "transaction_type", transactionType);
+            Utils::AddIfNotNull(param, "quantity", std::to_string(quantity));
+            Utils::AddIfNotNull(param, "price", std::to_string(price));
+            Utils::AddIfNotNull(param, "product", product);
+            Utils::AddIfNotNull(param, "order_type", orderType);
+            Utils::AddIfNotNull(param, "validity", validity);
+            Utils::AddIfNotNull(param, "disclosed_quantity", std::to_string(disclosedQuantity));
+            Utils::AddIfNotNull(param, "trigger_price", std::to_string(triggerPrice));
+            Utils::AddIfNotNull(param, "squareoff", std::to_string(squareOffValue));
+            Utils::AddIfNotNull(param, "stoploss", std::to_string(stoplossValue));
+            Utils::AddIfNotNull(param, "trailing_stoploss", std::to_string(trailingStoploss));
+            Utils::AddIfNotNull(param, "variety", variety);
+            Utils::AddIfNotNull(param, "tag", tag);
 
-            return Post("orders.place", param);
+            std::string jsonResp = Post("orders.place", param);
+            return OrderResponse(jsonResp);
         }
 
         /// <summary>
@@ -387,55 +392,56 @@ namespace KiteConnect
         /// <param name="DisclosedQuantity">Quantity to disclose publicly (for equity trades)</param>
         /// <param name="TriggerPrice">For SL, SL-M etc.</param>
         /// <param name="Variety">You can place orders of varieties; regular orders, after market orders, cover orders etc. </param>
-        /// <returns>Json response in the form of nested string dictionary.</returns>
-        Dictionary<string, dynamic> ModifyOrder(
-            string OrderId,
-            string ParentOrderId = null,
-            string Exchange = null,
-            string TradingSymbol = null,
-            string TransactionType = null,
-            string Quantity = null,
-            decimal? Price = null,
-            string Product = null,
-            string OrderType = null,
-            string Validity = Constants.VALIDITY_DAY,
-            int? DisclosedQuantity = null,
-            decimal? TriggerPrice = null,
-            string Variety = Constants.VARIETY_REGULAR)
+        /// <returns>Json response in the form of nested std::string dictionary.</returns>
+        OrderResponse ModifyOrder(
+            std::string orderId,
+            std::string parentOrderId = null,
+            std::string exchange = null,
+            std::string tradingSymbol = null,
+            std::string transactionType = null,
+            std::string quantity = null,
+            double price = null,
+            std::string product = null,
+            std::string orderType = null,
+            std::string validity = Constants.VALIDITY_DAY,
+            int disclosedQuantity = null,
+            double triggerPrice = null,
+            std::string variety = Constants::VARIETY_REGULAR)
         {
-            var param = new Dictionary<string, dynamic>();
+            map<std::string, std::string> param;
 
-            string VarietyString = Variety;
-            string ProductString = Product;
+            std::string varietyString = Variety;
+            std::string productString = Product;
 
-            if ((ProductString == "bo" || ProductString == "co") && VarietyString != ProductString)
-                throw new Exception(String.Format("Invalid variety. It should be: {}", ProductString));
+            if ((productString == "bo" || productString == "co") && varietyString != productString)
+                throw new Exception(String.Format("Invalid variety. It should be: {}", productString));
 
-            Utils::AddIfNotNull(param, "order_id", OrderId);
-            Utils::AddIfNotNull(param, "parent_order_id", ParentOrderId);
-            Utils::AddIfNotNull(param, "trigger_price", TriggerPrice.ToString());
-            Utils::AddIfNotNull(param, "variety", Variety);
+            Utils::AddIfNotNull(param, "order_id", orderId);
+            Utils::AddIfNotNull(param, "parent_order_id", parentOrderId);
+            Utils::AddIfNotNull(param, "trigger_price", std::to_string(triggerPrice));
+            Utils::AddIfNotNull(param, "variety", variety);
 
-            if (VarietyString == "bo" && ProductString == "bo")
+            if (varietyString == "bo" && productString == "bo")
             {
-                Utils::AddIfNotNull(param, "quantity", Quantity);
-                Utils::AddIfNotNull(param, "price", Price.ToString());
-                Utils::AddIfNotNull(param, "disclosed_quantity", DisclosedQuantity.ToString());
+                Utils::AddIfNotNull(param, "quantity", quantity);
+                Utils::AddIfNotNull(param, "price", std::to_string(price));
+                Utils::AddIfNotNull(param, "disclosed_quantity", std::to_string(disclosedQuantity));
             }
-            else if (VarietyString != "co" && ProductString != "co")
+            else if (varietyString != "co" && productString != "co")
             {
-                Utils::AddIfNotNull(param, "exchange", Exchange);
-                Utils::AddIfNotNull(param, "tradingsymbol", TradingSymbol);
-                Utils::AddIfNotNull(param, "transaction_type", TransactionType);
-                Utils::AddIfNotNull(param, "quantity", Quantity);
-                Utils::AddIfNotNull(param, "price", Price.ToString());
-                Utils::AddIfNotNull(param, "product", Product);
-                Utils::AddIfNotNull(param, "order_type", OrderType);
-                Utils::AddIfNotNull(param, "validity", Validity);
-                Utils::AddIfNotNull(param, "disclosed_quantity", DisclosedQuantity.ToString());
+                Utils::AddIfNotNull(param, "exchange", exchange);
+                Utils::AddIfNotNull(param, "tradingsymbol", tradingSymbol);
+                Utils::AddIfNotNull(param, "transaction_type", transactionType);
+                Utils::AddIfNotNull(param, "quantity", quantity);
+                Utils::AddIfNotNull(param, "price", std::to_string(price));
+                Utils::AddIfNotNull(param, "product", product);
+                Utils::AddIfNotNull(param, "order_type", orderType);
+                Utils::AddIfNotNull(param, "validity", validity);
+                Utils::AddIfNotNull(param, "disclosed_quantity", std::to_string(disclosedQuantity));
             }
 
-            return Put("orders.modify", param);
+            std::string jsonResp = Put("orders.modify", param);
+            return OrderResponse(jsonResp);
         }
 
         /// <summary>
@@ -444,32 +450,27 @@ namespace KiteConnect
         /// <param name="OrderId">Id of the order to be cancelled</param>
         /// <param name="Variety">You can place orders of varieties; regular orders, after market orders, cover orders etc. </param>
         /// <param name="ParentOrderId">Id of the parent order (obtained from the /orders call) as BO is a multi-legged order</param>
-        /// <returns>Json response in the form of nested string dictionary.</returns>
-        Dictionary<string, dynamic> CancelOrder(string OrderId, string Variety = Constants.VARIETY_REGULAR, string ParentOrderId = null)
+        /// <returns>Json response in the form of nested std::string dictionary.</returns>
+        OrderResponse CancelOrder(std::string orderId,
+                                  std::string variety = Constants::VARIETY_REGULAR,
+                                  std::string parentOrderId = null)
         {
-            var param = new Dictionary<string, dynamic>();
+            map<std::string, std::string> param;
 
-            Utils::AddIfNotNull(param, "order_id", OrderId);
-            Utils::AddIfNotNull(param, "parent_order_id", ParentOrderId);
-            Utils::AddIfNotNull(param, "variety", Variety);
+            Utils::AddIfNotNull(param, "order_id", orderId);
+            Utils::AddIfNotNull(param, "parent_order_id", parentOrderId);
+            Utils::AddIfNotNull(param, "variety", variety);
 
-            return Delete("orders.cancel", param);
+            return OrderResponse(Delete("orders.cancel", param));
         }
 
         /// <summary>
         /// Gets the collection of orders from the orderbook.
         /// </summary>
-        /// <returns>List of orders.</returns>
-        List<Order> GetOrders()
+        /// <returns>GetOrdersResponse which contains List of orders.</returns>
+        GetOrdersResponse GetOrders()
         {
-            var ordersData = Get("orders");
-
-            List<Order> orders = new List<Order>();
-
-            foreach (Dictionary<string, dynamic> item in ordersData["data"])
-                orders.Add(new Order(item));
-
-            return orders;
+            return GetOrdersResponse(Get("orders"));
         }
 
         /// <summary>
@@ -477,19 +478,13 @@ namespace KiteConnect
         /// </summary>
         /// <param name="OrderId">Unique order id</param>
         /// <returns>List of order objects.</returns>
-        List<Order> GetOrderHistory(string OrderId)
+        OrderHistoryResponse GetOrderHistory(std::string OrderId)
         {
-            var param = new Dictionary<string, dynamic>();
-            param.Add("order_id", OrderId);
+            map<std::string, std::string> param {
+                {"order_id", OrderId},
+            };
 
-            var orderData = Get("orders.history", param);
-
-            List<Order> orderhistory = new List<Order>();
-
-            foreach (Dictionary<string, dynamic> item in orderData["data"])
-                orderhistory.Add(new Order(item));
-
-            return orderhistory;
+            return OrderHistoryResponse(Get("orders.history", param));
         }
 
         /// <summary>
@@ -499,24 +494,19 @@ namespace KiteConnect
         /// </summary>
         /// <param name="OrderId">is the ID of the order (optional) whose trades are to be retrieved. If no `OrderId` is specified, all trades for the day are returned.</param>
         /// <returns>List of trades of given order.</returns>
-        List<Trade> GetOrderTrades(string OrderId = null)
+        OrderTradesResponse GetOrderTrades(std::string orderId = null)
         {
-            Dictionary<string, dynamic> tradesdata;
-            if (!String.IsNullOrEmpty(OrderId))
+            Dictionary<std::string, dynamic> tradesdata;
+            if (!orderId.empty())
             {
-                var param = new Dictionary<string, dynamic>();
-                param.Add("order_id", OrderId);
-                tradesdata = Get("orders.trades", param);
+                map<std::string, std::string> param 
+                {
+                   {"order_id", orderId}
+                };
+                return(OrderTradesResponse(Get("orders.trades", param)));
             }
-            else
-                tradesdata = Get("trades");
+            return OrderTradesResponse(Get("trades"));
 
-            List<Trade> trades = new List<Trade>();
-
-            foreach (Dictionary<string, dynamic> item in tradesdata["data"])
-                trades.Add(new Trade(item));
-
-            return trades;
         }
 
         /// <summary>
@@ -525,24 +515,18 @@ namespace KiteConnect
         /// <returns>Day and net positions.</returns>
         PositionResponse GetPositions()
         {
-            var positionsdata = Get("portfolio.positions");
-            return new PositionResponse(positionsdata["data"]);
+            std::string positionsdata = Get("portfolio.positions");
+            return PositionResponse(positionsdata);
         }
 
         /// <summary>
         /// Retrieve the list of equity holdings.
         /// </summary>
         /// <returns>List of holdings.</returns>
-        List<Holding> GetHoldings()
+        HoldingsResponse GetHoldings()
         {
-            var holdingsData = Get("portfolio.holdings");
-
-            List<Holding> holdings = new List<Holding>();
-
-            foreach (Dictionary<string, dynamic> item in holdingsData["data"])
-                holdings.Add(new Holding(item));
-
-            return holdings;
+            std::string holdingsData = Get("portfolio.holdings");
+            return HoldingsResponse(holdingsData);
         }
 
         /// <summary>
@@ -555,27 +539,27 @@ namespace KiteConnect
         /// <param name="Quantity">Quantity to convert</param>
         /// <param name="OldProduct">Existing margin product of the position</param>
         /// <param name="NewProduct">Margin product to convert to</param>
-        /// <returns>Json response in the form of nested string dictionary.</returns>
-        Dictionary<string, dynamic> ConvertPosition(
-            string Exchange,
-            string TradingSymbol,
-            string TransactionType,
-            string PositionType,
-            int? Quantity,
-            string OldProduct,
-            string NewProduct)
+        /// <returns>Json response in the form of nested std::string dictionary.</returns>
+        ConvertPositionResponse ConvertPosition(
+            std::string exchange,
+            std::string tradingSymbol,
+            std::string transactionType,
+            std::string positionType,
+            int quantity,
+            std::string oldProduct,
+            std::string newProduct)
         {
-            var param = new Dictionary<string, dynamic>();
+            map <std::string, std::string> param;
 
-            Utils::AddIfNotNull(param, "exchange", Exchange);
-            Utils::AddIfNotNull(param, "tradingsymbol", TradingSymbol);
-            Utils::AddIfNotNull(param, "transaction_type", TransactionType);
-            Utils::AddIfNotNull(param, "position_type", PositionType);
-            Utils::AddIfNotNull(param, "quantity", Quantity.ToString());
-            Utils::AddIfNotNull(param, "old_product", OldProduct);
-            Utils::AddIfNotNull(param, "new_product", NewProduct);
+            Utils::AddIfNotNull(param, "exchange", exchange);
+            Utils::AddIfNotNull(param, "tradingsymbol", tradingSymbol);
+            Utils::AddIfNotNull(param, "transaction_type", transactionType);
+            Utils::AddIfNotNull(param, "position_type", positionType);
+            Utils::AddIfNotNull(param, "quantity", std::string(quantity));
+            Utils::AddIfNotNull(param, "old_product", oldProduct);
+            Utils::AddIfNotNull(param, "new_product", newProduct);
 
-            return Put("portfolio.positions.modify", param);
+            return ConvertPositionResonse(Put("portfolio.positions.modify", param));
         }
 
         /// <summary>
@@ -585,26 +569,19 @@ namespace KiteConnect
         /// </summary>
         /// <param name="Exchange">Name of the exchange</param>
         /// <returns>List of instruments.</returns>
-        List<Instrument> GetInstruments(string Exchange = null)
+        List<Instrument> GetInstruments(std::string exchange = null)
         {
-            var param = new Dictionary<string, dynamic>();
+            ParamType param;
+            std::string instrumentsData;
 
-            List<Dictionary<string, dynamic>> instrumentsData;
-
-            if (String.IsNullOrEmpty(Exchange))
+            if (exchange.empty()))
                 instrumentsData = Get("market.instruments.all", param);
             else
             {
-                param.Add("exchange", Exchange);
+                param[0] = std::pair<std::string, std::string>("exchange", exchange);
                 instrumentsData = Get("market.instruments", param);
             }
-
-            List<Instrument> instruments = new List<Instrument>();
-
-            foreach (Dictionary<string, dynamic> item in instrumentsData)
-                instruments.Add(new Instrument(item));
-
-            return instruments;
+            return GetInstrumentsResponse(instrumentsData);
         }
 
         /// <summary>
@@ -612,17 +589,17 @@ namespace KiteConnect
         /// </summary>
         /// <param name="InstrumentId">Indentification of instrument in the form of EXCHANGE:TRADINGSYMBOL (eg: NSE:INFY) or InstrumentToken (eg: 408065)</param>
         /// <returns>Dictionary of all Quote objects with keys as in InstrumentId</returns>
-        Dictionary<string, Quote> GetQuote(string[] InstrumentId)
+        QuoteResponse GetQuote(vector<std::string> instrumentIds)
         {
-            var param = new Dictionary<string, dynamic>();
-            param.Add("i", InstrumentId);
-            Dictionary<string, dynamic> quoteData = Get("market.quote", param)["data"];
+            ParamType param;
+            for (int idx = 0; idx < instrumentIds.size(); idx++)
+            {
+                param[idx] = make_pair<std::string, std::string>("i", instrumentIds[idx]);
+            }
 
-            Dictionary<string, Quote> quotes = new Dictionary<string, Quote>();
-            foreach (string item in quoteData.Keys)
-                quotes.Add(item, new Quote(quoteData[item]));
+            std::string quoteResponse= Get("market.quote", param);
 
-            return quotes;
+            return QuoteResponse(quoteResponse, instrumentIds);
         }
 
         /// <summary>
@@ -630,17 +607,16 @@ namespace KiteConnect
         /// </summary>
         /// <param name="InstrumentId">Indentification of instrument in the form of EXCHANGE:TRADINGSYMBOL (eg: NSE:INFY) or InstrumentToken (eg: 408065)</param>
         /// <returns>Dictionary of all OHLC objects with keys as in InstrumentId</returns>
-        Dictionary<string, OHLC> GetOHLC(string[] InstrumentId)
+        OHLCResponse GetOHLC(vector<std::string> instrumentIds)
         {
-            var param = new Dictionary<string, dynamic>();
-            param.Add("i", InstrumentId);
-            Dictionary<string, dynamic> ohlcData = Get("market.ohlc", param)["data"];
+            ParamType param;
+            for (int idx = 0; idx < instrumentIds.size(); idx++)
+            {
+                param[idx] = make_pair<std::string, std::string>("i", instrumentIds[idx]);
+            }
 
-            Dictionary<string, OHLC> ohlcs = new Dictionary<string, OHLC>();
-            foreach (string item in ohlcData.Keys)
-                ohlcs.Add(item, new OHLC(ohlcData[item]));
-
-            return ohlcs;
+            std::string ohlcResponse= Get("market.ohlc", param);
+            return OHLCResponse(ohlcResponse, instrumentIds);
         }
 
         /// <summary>
@@ -648,17 +624,23 @@ namespace KiteConnect
         /// </summary>
         /// <param name="InstrumentId">Indentification of instrument in the form of EXCHANGE:TRADINGSYMBOL (eg: NSE:INFY) or InstrumentToken (eg: 408065)</param>
         /// <returns>Dictionary with InstrumentId as key and LTP as value.</returns>
-        Dictionary<string, LTP> GetLTP(string[] InstrumentId)
+        LTPResponse GetLTP(vector<std::string> instrumentIds)
         {
-            var param = new Dictionary<string, dynamic>();
-            param.Add("i", InstrumentId);
-            Dictionary<string, dynamic> ltpData = Get("market.ltp", param)["data"];
+            ParamType param;
+            for (int idx = 0; idx < instrumentIds.size(); idx++)
+            {
+                param[idx] = make_pair<std::string, std::string>("i", instrumentIds[idx]);
+            }
 
-            Dictionary<string, LTP> ltps = new Dictionary<string, LTP>();
-            foreach (string item in ltpData.Keys)
-                ltps.Add(item, new LTP(ltpData[item]));
+            std::string ohlcResponse= Get("market.ltp", param);
+            return LTPResponse(ohlcResponse, instrumentIds);
+            // Dictionary<std::string, dynamic> ltpData = Get("market.ltp", param)["data"];
 
-            return ltps;
+            // Dictionary<std::string, LTP> ltps = new Dictionary<std::string, LTP>();
+            // foreach (std::string item in ltpData.Keys)
+            //     ltps.Add(item, new LTP(ltpData[item]));
+
+            // return ltps;
         }
 
         /// <summary>
@@ -672,30 +654,25 @@ namespace KiteConnect
         /// <param name="OI">Pass true to get open interest data.</param>
         /// <returns>List of Historical objects.</returns>
         List<Historical> GetHistoricalData(
-            string InstrumentToken,
+            std::string InstrumentToken,
             DateTime FromDate,
             DateTime ToDate,
-            string Interval,
-            bool Continuous = false,
+            std::string interval,
+            bool continuous = false,
             bool OI = false)
         {
-            var param = new Dictionary<string, dynamic>();
+            ParamType param
+            {
+                {"instrument_token", instrumentToken},
+                {"from", FromDate.ToString("yyyy-MM-dd HH:mm:ss")},
+                {"to", ToDate.ToString("yyyy-MM-dd HH:mm:ss")},
+                {"interval", Interval},
+                {"continuous", continuous ? "1" : "0"},
+                {"oi", OI ? "1" : "0"}
+            };
 
-            param.Add("instrument_token", InstrumentToken);
-            param.Add("from", FromDate.ToString("yyyy-MM-dd HH:mm:ss"));
-            param.Add("to", ToDate.ToString("yyyy-MM-dd HH:mm:ss"));
-            param.Add("interval", Interval);
-            param.Add("continuous", Continuous ? "1" : "0");
-            param.Add("oi", OI ? "1" : "0");
-
-            var historicalData = Get("market.historical", param);
-
-            List<Historical> historicals = new List<Historical>();
-
-            foreach (ArrayList item in historicalData["data"]["candles"])
-                historicals.Add(new Historical(item));
-
-            return historicals;
+            std::string historicalData = Get("market.historical", param);
+            return HistoricalResponse(historicalData);
         }
 
         /// <summary>
@@ -704,21 +681,21 @@ namespace KiteConnect
         /// <param name="InstrumentId">Indentification of instrument in the form of EXCHANGE:TRADINGSYMBOL (eg: NSE:INFY) or InstrumentToken (eg: 408065)</param>
         /// <param name="TrasactionType">BUY or SELL</param>
         /// <returns>List of trigger ranges for given instrument ids for given transaction type.</returns>
-        Dictionary<string, TrigerRange> GetTriggerRange(string[] InstrumentId, string TrasactionType)
-        {
-            var param = new Dictionary<string, dynamic>();
+        // Dictionary<std::string, TrigerRange> GetTriggerRange(string[] InstrumentId, std::string TrasactionType)
+        // {
+        //     var param = new Dictionary<std::string, dynamic>();
 
-            param.Add("i", InstrumentId);
-            param.Add("transaction_type", TrasactionType.ToLower());
+        //     param.Add("i", InstrumentId);
+        //     param.Add("transaction_type", TrasactionType.ToLower());
 
-            var triggerdata = Get("market.trigger_range", param)["data"];
+        //     var triggerdata = Get("market.trigger_range", param)["data"];
 
-            Dictionary<string, TrigerRange> triggerRanges = new Dictionary<string, TrigerRange>();
-            foreach (string item in triggerdata.Keys)
-                triggerRanges.Add(item, new TrigerRange(triggerdata[item]));
+        //     Dictionary<std::string, TrigerRange> triggerRanges = new Dictionary<std::string, TrigerRange>();
+        //     foreach (std::string item in triggerdata.Keys)
+        //         triggerRanges.Add(item, new TrigerRange(triggerdata[item]));
 
-            return triggerRanges;
-        }
+        //     return triggerRanges;
+        // }
 
         #region GTT
 
@@ -726,13 +703,13 @@ namespace KiteConnect
         /// Retrieve the list of GTTs.
         /// </summary>
         /// <returns>List of GTTs.</returns>
-        List<GTT> GetGTTs()
+        GTTResponse GetGTTs()
         {
-            var gttsdata = Get("gtt");
+            std::string gttsdata = Get("gtt");
 
             List<GTT> gtts = new List<GTT>();
 
-            foreach (Dictionary<string, dynamic> item in gttsdata["data"])
+            foreach (Dictionary<std::string, dynamic> item in gttsdata["data"])
                 gtts.Add(new GTT(item));
 
             return gtts;
@@ -746,7 +723,7 @@ namespace KiteConnect
         /// <returns>GTT info</returns>
         GTT GetGTT(int GTTId)
         {
-            var param = new Dictionary<string, dynamic>();
+            var param = new Dictionary<std::string, dynamic>();
             param.Add("id", GTTId.ToString());
 
             var gttdata = Get("gtt.info", param);
@@ -758,20 +735,20 @@ namespace KiteConnect
         /// Place a GTT order
         /// </summary>
         /// <param name="gttParams">Contains the parameters for the GTT order</param>
-        /// <returns>Json response in the form of nested string dictionary.</returns>
-        Dictionary<string, dynamic> PlaceGTT(GTTParams gttParams)
+        /// <returns>Json response in the form of nested std::string dictionary.</returns>
+        Dictionary<std::string, dynamic> PlaceGTT(GTTParams gttParams)
         {
-            var condition = new Dictionary<string, dynamic>();
+            var condition = new Dictionary<std::string, dynamic>();
             condition.Add("exchange", gttParams.Exchange);
             condition.Add("tradingsymbol", gttParams.TradingSymbol);
             condition.Add("trigger_values", gttParams.TriggerPrices);
             condition.Add("last_price", gttParams.LastPrice);
             condition.Add("instrument_token", gttParams.InstrumentToken);
 
-            var ordersParam = new List<Dictionary<string, dynamic>>();
+            var ordersParam = new List<Dictionary<std::string, dynamic>>();
             foreach (var o in gttParams.Orders)
             {
-                var order = new Dictionary<string, dynamic>();
+                var order = new Dictionary<std::string, dynamic>();
                 order["exchange"] = gttParams.Exchange;
                 order["tradingsymbol"] = gttParams.TradingSymbol;
                 order["transaction_type"] = o.TransactionType;
@@ -782,7 +759,7 @@ namespace KiteConnect
                 ordersParam.Add(order);
             }
 
-            var parms = new Dictionary<string, dynamic>();
+            var parms = new Dictionary<std::string, dynamic>();
             parms.Add("condition", Utils::JsonSerialize(condition));
             parms.Add("orders", Utils::JsonSerialize(ordersParam));
             parms.Add("type", gttParams.TriggerType);
@@ -795,20 +772,20 @@ namespace KiteConnect
         /// </summary>
         /// <param name="GTTId">Id of the GTT to be modified</param>
         /// <param name="gttParams">Contains the parameters for the GTT order</param>
-        /// <returns>Json response in the form of nested string dictionary.</returns>
-        Dictionary<string, dynamic> ModifyGTT(int GTTId, GTTParams gttParams)
+        /// <returns>Json response in the form of nested std::string dictionary.</returns>
+        Dictionary<std::string, dynamic> ModifyGTT(int GTTId, GTTParams gttParams)
         {
-            var condition = new Dictionary<string, dynamic>();
+            var condition = new Dictionary<std::string, dynamic>();
             condition.Add("exchange", gttParams.Exchange);
             condition.Add("tradingsymbol", gttParams.TradingSymbol);
             condition.Add("trigger_values", gttParams.TriggerPrices);
             condition.Add("last_price", gttParams.LastPrice);
             condition.Add("instrument_token", gttParams.InstrumentToken);
 
-            var ordersParam = new List<Dictionary<string, dynamic>>();
+            var ordersParam = new List<Dictionary<std::string, dynamic>>();
             foreach (var o in gttParams.Orders)
             {
-                var order = new Dictionary<string, dynamic>();
+                var order = new Dictionary<std::string, dynamic>();
                 order["exchange"] = gttParams.Exchange;
                 order["tradingsymbol"] = gttParams.TradingSymbol;
                 order["transaction_type"] = o.TransactionType;
@@ -819,7 +796,7 @@ namespace KiteConnect
                 ordersParam.Add(order);
             }
 
-            var parms = new Dictionary<string, dynamic>();
+            var parms = new Dictionary<std::string, dynamic>();
             parms.Add("condition", Utils::JsonSerialize(condition));
             parms.Add("orders", Utils::JsonSerialize(ordersParam));
             parms.Add("type", gttParams.TriggerType);
@@ -832,18 +809,17 @@ namespace KiteConnect
         /// Cancel a GTT order
         /// </summary>
         /// <param name="GTTId">Id of the GTT to be modified</param>
-        /// <returns>Json response in the form of nested string dictionary.</returns>
-        Dictionary<string, dynamic> CancelGTT(int GTTId)
+        /// <returns>Json response in the form of nested std::string dictionary.</returns>
+        Dictionary<std::string, dynamic> CancelGTT(int GTTId)
         {
-            var parms = new Dictionary<string, dynamic>();
-            parms.Add("id", GTTId.ToString());
+            map<std::string, std::string> params {"id", std::string(GTTId)};
 
             return Delete("gtt.delete", parms);
         }
 
-        #endregion GTT
+        // endregion GTT
 
-
+#if 0
         #region MF Calls
 
         /// <summary>
@@ -852,15 +828,15 @@ namespace KiteConnect
         /// <returns>The Mutual funds Instruments.</returns>
         List<MFInstrument> GetMFInstruments()
         {
-            var param = new Dictionary<string, dynamic>();
+            var param = new Dictionary<std::string, dynamic>();
 
-            List<Dictionary<string, dynamic>> instrumentsData;
+            List<Dictionary<std::string, dynamic>> instrumentsData;
 
             instrumentsData = Get("mutualfunds.instruments", param);
 
             List<MFInstrument> instruments = new List<MFInstrument>();
 
-            foreach (Dictionary<string, dynamic> item in instrumentsData)
+            foreach (Dictionary<std::string, dynamic> item in instrumentsData)
                 instruments.Add(new MFInstrument(item));
 
             return instruments;
@@ -872,14 +848,14 @@ namespace KiteConnect
         /// <returns>The Mutual funds orders.</returns>
         List<MFOrder> GetMFOrders()
         {
-            var param = new Dictionary<string, dynamic>();
+            var param = new Dictionary<std::string, dynamic>();
 
-            Dictionary<string, dynamic> ordersData;
+            Dictionary<std::string, dynamic> ordersData;
             ordersData = Get("mutualfunds.orders", param);
 
             List<MFOrder> orderlist = new List<MFOrder>();
 
-            foreach (Dictionary<string, dynamic> item in ordersData["data"])
+            foreach (Dictionary<std::string, dynamic> item in ordersData["data"])
                 orderlist.Add(new MFOrder(item));
 
             return orderlist;
@@ -892,10 +868,10 @@ namespace KiteConnect
         /// <param name="OrderId">Order id.</param>
         MFOrder GetMFOrders(String OrderId)
         {
-            var param = new Dictionary<string, dynamic>();
+            var param = new Dictionary<std::string, dynamic>();
             param.Add("order_id", OrderId);
 
-            Dictionary<string, dynamic> orderData;
+            Dictionary<std::string, dynamic> orderData;
             orderData = Get("mutualfunds.order", param);
 
             return new MFOrder(orderData["data"]);
@@ -904,20 +880,20 @@ namespace KiteConnect
         /// <summary>
         /// Places a Mutual funds order.
         /// </summary>
-        /// <returns>JSON response as nested string dictionary.</returns>
+        /// <returns>JSON response as nested std::string dictionary.</returns>
         /// <param name="TradingSymbol">Tradingsymbol (ISIN) of the fund.</param>
         /// <param name="TransactionType">BUY or SELL.</param>
         /// <param name="Amount">Amount worth of units to purchase. Not applicable on SELLs.</param>
         /// <param name="Quantity">Quantity to SELL. Not applicable on BUYs. If the holding is less than minimum_redemption_quantity, all the units have to be sold.</param>
         /// <param name="Tag">An optional tag to apply to an order to identify it (alphanumeric, max 8 chars).</param>
-        Dictionary<string, dynamic> PlaceMFOrder(
-            string TradingSymbol,
-            string TransactionType,
-            decimal? Amount,
-            decimal? Quantity = null,
-            string Tag = "")
+        Dictionary<std::string, dynamic> PlaceMFOrder(
+            std::string TradingSymbol,
+            std::string TransactionType,
+            double Amount,
+            double Quantity = null,
+            std::string Tag = "")
         {
-            var param = new Dictionary<string, dynamic>();
+            var param = new Dictionary<std::string, dynamic>();
 
             Utils::AddIfNotNull(param, "tradingsymbol", TradingSymbol);
             Utils::AddIfNotNull(param, "transaction_type", TransactionType);
@@ -931,11 +907,11 @@ namespace KiteConnect
         /// <summary>
         /// Cancels the Mutual funds order.
         /// </summary>
-        /// <returns>JSON response as nested string dictionary.</returns>
+        /// <returns>JSON response as nested std::string dictionary.</returns>
         /// <param name="OrderId">Unique order id.</param>
-        Dictionary<string, dynamic> CancelMFOrder(String OrderId)
+        Dictionary<std::string, dynamic> CancelMFOrder(String OrderId)
         {
-            var param = new Dictionary<string, dynamic>();
+            var param = new Dictionary<std::string, dynamic>();
 
             Utils::AddIfNotNull(param, "order_id", OrderId);
 
@@ -948,14 +924,14 @@ namespace KiteConnect
         /// <returns>The list of all Mutual funds SIPs.</returns>
         List<MFSIP> GetMFSIPs()
         {
-            var param = new Dictionary<string, dynamic>();
+            var param = new Dictionary<std::string, dynamic>();
 
-            Dictionary<string, dynamic> sipData;
+            Dictionary<std::string, dynamic> sipData;
             sipData = Get("mutualfunds.sips", param);
 
             List<MFSIP> siplist = new List<MFSIP>();
 
-            foreach (Dictionary<string, dynamic> item in sipData["data"])
+            foreach (Dictionary<std::string, dynamic> item in sipData["data"])
                 siplist.Add(new MFSIP(item));
 
             return siplist;
@@ -968,10 +944,10 @@ namespace KiteConnect
         /// <param name="SIPID">SIP id.</param>
         MFSIP GetMFSIPs(String SIPID)
         {
-            var param = new Dictionary<string, dynamic>();
+            var param = new Dictionary<std::string, dynamic>();
             param.Add("sip_id", SIPID);
 
-            Dictionary<string, dynamic> sipData;
+            Dictionary<std::string, dynamic> sipData;
             sipData = Get("mutualfunds.sip", param);
 
             return new MFSIP(sipData["data"]);
@@ -980,7 +956,7 @@ namespace KiteConnect
         /// <summary>
         /// Places a Mutual funds SIP order.
         /// </summary>
-        /// <returns>JSON response as nested string dictionary.</returns>
+        /// <returns>JSON response as nested std::string dictionary.</returns>
         /// <param name="TradingSymbol">ISIN of the fund.</param>
         /// <param name="Amount">Amount worth of units to purchase. It should be equal to or greated than minimum_additional_purchase_amount and in multiple of purchase_amount_multiplier in the instrument master.</param>
         /// <param name="InitialAmount">Amount worth of units to purchase before the SIP starts. Should be equal to or greater than minimum_purchase_amount and in multiple of purchase_amount_multiplier. This is only considered if there have been no prior investments in the target fund.</param>
@@ -988,16 +964,16 @@ namespace KiteConnect
         /// <param name="InstalmentDay">If Frequency is monthly, the day of the month (1, 5, 10, 15, 20, 25) to trigger the order on.</param>
         /// <param name="Instalments">Number of instalments to trigger. If set to -1, instalments are triggered at fixed intervals until the SIP is cancelled.</param>
         /// <param name="Tag">An optional tag to apply to an order to identify it (alphanumeric, max 8 chars).</param>
-        Dictionary<string, dynamic> PlaceMFSIP(
-            string TradingSymbol,
-            decimal? Amount,
-            decimal? InitialAmount,
-            string Frequency,
-            int? InstalmentDay,
-            int? Instalments,
-            string Tag = "")
+        Dictionary<std::string, dynamic> PlaceMFSIP(
+            std::string TradingSymbol,
+            double Amount,
+            double InitialAmount,
+            std::string Frequency,
+            int InstalmentDay,
+            int Instalments,
+            std::string Tag = "")
         {
-            var param = new Dictionary<string, dynamic>();
+            var param = new Dictionary<std::string, dynamic>();
 
             Utils::AddIfNotNull(param, "tradingsymbol", TradingSymbol);
             Utils::AddIfNotNull(param, "initial_amount", InitialAmount.ToString());
@@ -1012,22 +988,22 @@ namespace KiteConnect
         /// <summary>
         /// Modifies the Mutual funds SIP.
         /// </summary>
-        /// <returns>JSON response as nested string dictionary.</returns>
+        /// <returns>JSON response as nested std::string dictionary.</returns>
         /// <param name="SIPId">SIP id.</param>
         /// <param name="Amount">Amount worth of units to purchase. It should be equal to or greated than minimum_additional_purchase_amount and in multiple of purchase_amount_multiplier in the instrument master.</param>
         /// <param name="Frequency">weekly, monthly, or quarterly.</param>
         /// <param name="InstalmentDay">If Frequency is monthly, the day of the month (1, 5, 10, 15, 20, 25) to trigger the order on.</param>
         /// <param name="Instalments">Number of instalments to trigger. If set to -1, instalments are triggered idefinitely until the SIP is cancelled.</param>
         /// <param name="Status">Pause or unpause an SIP (active or paused).</param>
-        Dictionary<string, dynamic> ModifyMFSIP(
-            string SIPId,
-            decimal? Amount,
-            string Frequency,
-            int? InstalmentDay,
-            int? Instalments,
-            string Status)
+        Dictionary<std::string, dynamic> ModifyMFSIP(
+            std::string SIPId,
+            double Amount,
+            std::string Frequency,
+            int InstalmentDay,
+            int Instalments,
+            std::string Status)
         {
-            var param = new Dictionary<string, dynamic>();
+            var param = new Dictionary<std::string, dynamic>();
 
             Utils::AddIfNotNull(param, "status", Status);
             Utils::AddIfNotNull(param, "sip_id", SIPId);
@@ -1042,11 +1018,11 @@ namespace KiteConnect
         /// <summary>
         /// Cancels the Mutual funds SIP.
         /// </summary>
-        /// <returns>JSON response as nested string dictionary.</returns>
+        /// <returns>JSON response as nested std::string dictionary.</returns>
         /// <param name="SIPId">SIP id.</param>
-		Dictionary<string, dynamic> CancelMFSIP(String SIPId)
+		Dictionary<std::string, dynamic> CancelMFSIP(String SIPId)
         {
-            var param = new Dictionary<string, dynamic>();
+            var param = new Dictionary<std::string, dynamic>();
 
             Utils::AddIfNotNull(param, "sip_id", SIPId);
 
@@ -1059,21 +1035,21 @@ namespace KiteConnect
         /// <returns>The list of all Mutual funds holdings.</returns>
         List<MFHolding> GetMFHoldings()
         {
-            var param = new Dictionary<string, dynamic>();
+            var param = new Dictionary<std::string, dynamic>();
 
-            Dictionary<string, dynamic> holdingsData;
+            Dictionary<std::string, dynamic> holdingsData;
             holdingsData = Get("mutualfunds.holdings", param);
 
             List<MFHolding> holdingslist = new List<MFHolding>();
 
-            foreach (Dictionary<string, dynamic> item in holdingsData["data"])
+            foreach (Dictionary<std::string, dynamic> item in holdingsData["data"])
                 holdingslist.Add(new MFHolding(item));
 
             return holdingslist;
         }
 
         #endregion
-
+#endif
 //        #region HTTP Functions
 private:
         /// <summary>
@@ -1082,7 +1058,7 @@ private:
         /// <param name="Route">URL route of API</param>
         /// <param name="Params">Additional paramerters</param>
         /// <returns>Varies according to API endpoint</returns>
-        std::string Get(string route, Dictionary<string, dynamic> params = null)
+        std::string Get(std::string route, ParamType params = null)
         {
             return Request(route, methods::GET, params);
         }
@@ -1093,7 +1069,7 @@ private:
         /// <param name="Route">URL route of API</param>
         /// <param name="Params">Additional paramerters</param>
         /// <returns>Varies according to API endpoint</returns>
-        std::string Post(string route, shared_ptr<map<string, string>> params = nullptr)
+        std::string Post(std::string route, ParamType params = nullptr)
         {
             return Request(Route, methods::POST, params);
         }
@@ -1104,7 +1080,7 @@ private:
         /// <param name="Route">URL route of API</param>
         /// <param name="Params">Additional paramerters</param>
         /// <returns>Varies according to API endpoint</returns>
-        task<http_response> Put(string Route, Dictionary<string, dynamic> Params = null)
+        task<http_response> Put(std::string Route, ParamType Params = null)
         {
             return Request(Route, methods::PUT, Params);
         }
@@ -1115,7 +1091,7 @@ private:
         /// <param name="Route">URL route of API</param>
         /// <param name="Params">Additional paramerters</param>
         /// <returns>Varies according to API endpoint</returns>
-        task<http_response> Delete(string Route, Dictionary<string, dynamic> Params = null)
+        task<http_response> Delete(std::string Route, ParamType Params = null)
         {
             return Request(Route, methods::DEL, Params);
         }
@@ -1147,7 +1123,7 @@ private:
 
             if (_enableLogging)
             {
-                foreach (string header in Req.Headers.Keys)
+                foreach (std::string header in Req.Headers.Keys)
                 {
                     Console.WriteLine("DEBUG: " + header + ": " + Req.Headers.GetValues(header)[0]);
                 }
@@ -1162,19 +1138,19 @@ private:
         /// <param name="Method">Method of HTTP request</param>
         /// <param name="Params">Additional paramerters</param>
         /// <returns>Varies according to API endpoint</returns>
-        std::string Request(string route, string method, map<string, string> params = null)
+        std::string Request(std::string route, std::string method, ParamType params = null)
         {
-            string url = _root + _routes[Route];
+            std::string url = _root + _routes[Route];
             http_response webResponse;
 
             if (Params is null)
-                Params = new Dictionary<string, dynamic>();
+                Params = ;
 
-            if (url.find('{') != string::npos)
+            if (url.find('{') != std::string::npos)
             {
-                for (std::map<string, string>::iterator it=params.begin(); it!=params.end(); ++it) 
+                for (auto it=params.begin(); it!=params.end(); ++it) 
                 {
-                    if((size_t loc=url.find("{"+it->first+"}")) != string::npos) 
+                    if((size_t loc=url.find("{"+it->first+"}")) != std::string::npos) 
                     {
                         url.replace(loc, it->first.length+2, it->second);
                         params.erase(it->first);
@@ -1183,7 +1159,7 @@ private:
                 /*
                 var urlparams = Params.ToDictionary(entry => entry.Key, entry => entry.Value);
 
-                foreach (KeyValuePair<string, dynamic> item in urlparams)
+                foreach (KeyValuePair<std::string, dynamic> item in urlparams)
                     if (url.Contains("{" + item.Key + "}"))
                     {
                         url = url.Replace("{" + item.Key + "}", (string)item.Value);
@@ -1199,11 +1175,11 @@ private:
             //if (!Params.ContainsKey("access_token") && !String.IsNullOrEmpty(_accessToken))
             //    Params.Add("access_token", _accessToken);
             uri_builder paramEncoder;
-            for (std::map<string, string>::iterator it=params.begin(); it!=params.end(); ++it) {
+            for (auto it=params.begin(); it!=params.end(); ++it) {
                     //std::cout << it->first << " => " << it->second << '\n';
                     paramEncoder.append_query(U(it->first), U(it->second));
             }
-            string paramString(dataEncoder.erase(2)); /*append_query() adds `/?` at the begining */
+            std::string paramString(dataEncoder.erase(2)); /*append_query() adds `/?` at the begining */
             //HttpWebRequest request;
             //string paramString = String.Join("&", Params.Select(x => Utils::BuildParam(x.Key, x.Value)));
             http_request webRequest(method);
@@ -1262,11 +1238,11 @@ private:
 
             if (contentType == http::details::mime_types::application_json)
             {
-                //Dictionary<string, dynamic> responseDictionary = Utils::JsonDeserialize(response);
+                //Dictionary<std::string, dynamic> responseDictionary = Utils::JsonDeserialize(response);
                 if (status != http::status_codes::OK)
                 {
-                    string errorType = "GeneralException";
-                    string message = "";
+                    std::string errorType = "GeneralException";
+                    std::string message = "";
                     web::json::value obj = web::json::value::parse(body);
 
                     if (obj.has_string_field("error_type"))

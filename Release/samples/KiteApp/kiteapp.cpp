@@ -130,18 +130,21 @@ std::cout<<"Response sent:\n";
 http_request request(methods::GET);
 request.headers().add("User-Agent", "Testing");
 request.headers().add("X-Kite-Version", "3");
-request.headers().add(header_names::authorization, "token " + api_key + ":" + "x0lpWPjtq3cE9ELZDiohkO8L71DfHZE6");
-request.set_request_uri("/user/margin");
+request.headers().add(header_names::authorization, "token " + api_key + ":" + "JYgKT8hxj678tkMTgYMd5v3kgPVDlE3J");
+request.set_request_uri("/orders");
 pplx::task<web::http::http_response> resp =  client.request(request);//utility::conversions::to_utf8string("application/x-www-form-urlencoded"));
 try { 
-        //-- All Taskss will get triggered here 
+        //-- All Tasks will get triggered here 
         resp.wait();
         std::cout<<"Response received\n";
-        std::string str("சப்பங்கிமரச்");
-        std::cout<<str<<std::endl;
-        //resp.get().extract_utf8string()
         json::value obj = json::value::parse(resp.get().extract_string().get());
-        std::cerr<<"data: "<<obj["data"]["equity"]["net"].as_double();
+      json::array array_data(obj["data"].as_array());
+      for(auto itr=array_data.begin(); itr != array_data.end(); itr++)
+      {
+            json::value obj_data = *itr;
+            std::cerr<<"data: "<<obj_data["tradingsymbol"].as_string()<<std::endl;
+      }
+      obj.as_number().to_int32()
 } 
 catch (const std::exception &e) { 
         printf("Error exception:%sn", e.what()); 

@@ -12,12 +12,13 @@ using System.Text.RegularExpressions;
 */
 #include <string>
 #include <map>
-using namespace std;
+#include <list>
 
 namespace KiteConnect
 {
     class Utils
     {
+        using CSVObjType = std::list<std::map<std::string, std::string>>;
         /// <summary>
         /// Convert string to Date object
         /// </summary>
@@ -38,6 +39,16 @@ namespace KiteConnect
             {
                 return null;
             }
+        }
+        static std::time_t to_timestamp(const std::string& str,
+                                               bool is_dst = false,
+                                               const std::string& format = "%Y-%b-%d %H:%M:%S")
+        {
+            std::tm time_obj = {0};
+            time_obj.tm_isdst = is_dst ? 1 : 0;
+            std::istringstream ss(str);
+            ss >> std::get_time(&t, format.c_str());
+            return mktime(&t);
         }
 
         /// <summary>
@@ -120,11 +131,16 @@ namespace KiteConnect
 
         /// <summary>
         /// Parse instruments API's CSV response.
+        /// Takes arguments as referene to avoid coping huge data
         /// </summary>
-        /// <param name="Data">Response of instruments API.</param>
+        /// <param name="data">Response of instruments API.</param>
+        /// <param name="">Response of instruments API.</param>
         /// <returns>CSV data as array of nested string dictionary.</returns>
-        static List<Dictionary<string, dynamic>> ParseCSV(string Data)
+        static void ParseCSV(std::string &data, CSVObjType &csvObj)
         {
+            CSVObjType instruments;
+            /* TODO: Fill all the details here as below
+             * [map of each row with parameters and values]->[map]->[map]
             string[] lines = Data.Split('\n');
 
             List<Dictionary<string, dynamic>> instruments = new List<Dictionary<string, dynamic>>();
@@ -149,8 +165,7 @@ namespace KiteConnect
                     instruments.Add(item);
                 }
             }
-
-            return instruments;
+            */
         }
 
         /// <summary>
@@ -230,5 +245,5 @@ namespace KiteConnect
             }
             return res;
         }
-    }
-}
+    };
+};
