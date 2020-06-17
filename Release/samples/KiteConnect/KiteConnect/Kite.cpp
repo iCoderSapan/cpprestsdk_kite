@@ -6,10 +6,11 @@ using System.Net;
 using System.Collections;
 using System.Reflection;
 */
-#include <std::string>
+#include <string>
 #include <cpprest/http_client.h> 
 #include <cpprest/filestream.h> 
 //----- Some standard C++ headers emitted for brevity
+#include "KiteTypes.h"
 #include "cpprest/json.h" 
 #include "cpprest/http_listener.h" 
 #include "cpprest/uri.h" 
@@ -18,12 +19,9 @@ using System.Reflection;
 
 #include <iomanip>
 #include <sstream>
-#include <std::string>
 #include <iostream>
 #include <openssl/sha.h>
 #include <memory>
-
-#include "KiteTypes.cpp"
 
 //////////////////////////////////////////////// 
 // A Simple HTTP Client to Demonstrate  
@@ -131,7 +129,7 @@ namespace KiteConnect
         /// <param name="Timeout">Time in seconds for which  the API client will wait for a request to complete before it fails</param>
         /// <param name="Proxy">To set proxy for http request. Should be an object of WebProxy.</param>
         /// <param name="Pool">Number of connections to server. Client will reuse the connections if they are alive.</param>
-        Kite(std::string APIKey, std::string accessToken = null, std::string root = null, bool debug = false, int timeout = 7,  shared_ptr<web::web_proxy> proxy = nullptr, int Pool = 2)
+        Kite(std::string APIKey, std::string accessToken =nullptr, std::string root = nullptr, bool debug = false, int timeout = 7,  shared_ptr<web::web_proxy> proxy = nullptr, int Pool = 2)
         {
             _accessToken = accessToken;
             _apiKey = APIKey;
@@ -148,7 +146,7 @@ namespace KiteConnect
             if(proxy != nullptr) {
                 clientConfig.set_proxy(*proxy);
             }
-            httpClient = make_unique<http_client>(_root, clientConfig); //Fill in the root ur
+            httpClient = make_shared<http_client>(_root, clientConfig); //Fill in the root ur
             //ServicePointManager.DefaultConnectionLimit = Pool;
         }
 
@@ -653,10 +651,10 @@ namespace KiteConnect
         /// <param name="Continuous">Pass true to get continous data of expired instruments.</param>
         /// <param name="OI">Pass true to get open interest data.</param>
         /// <returns>List of Historical objects.</returns>
-        List<Historical> GetHistoricalData(
-            std::string InstrumentToken,
-            DateTime FromDate,
-            DateTime ToDate,
+        HistoricalResponse GetHistoricalData(
+            std::string instrumentToken,
+            DateTime fromDate,
+            DateTime toDate,
             std::string interval,
             bool continuous = false,
             bool OI = false)
@@ -664,9 +662,9 @@ namespace KiteConnect
             ParamType param
             {
                 {"instrument_token", instrumentToken},
-                {"from", FromDate.ToString("yyyy-MM-dd HH:mm:ss")},
-                {"to", ToDate.ToString("yyyy-MM-dd HH:mm:ss")},
-                {"interval", Interval},
+                {"from", fromDate},
+                {"to", toDate},
+                {"interval", interval},
                 {"continuous", continuous ? "1" : "0"},
                 {"oi", OI ? "1" : "0"}
             };
@@ -697,7 +695,7 @@ namespace KiteConnect
         //     return triggerRanges;
         // }
 
-        #region GTT
+#if 0        //#region GTT
 
         /// <summary>
         /// Retrieve the list of GTTs.
@@ -819,7 +817,6 @@ namespace KiteConnect
 
         // endregion GTT
 
-#if 0
         #region MF Calls
 
         /// <summary>
