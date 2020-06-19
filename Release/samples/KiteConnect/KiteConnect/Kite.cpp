@@ -40,7 +40,6 @@ using namespace std;      // Use std c++ features
 
 namespace KiteConnect
 {
-    using ParamType = vector<pair<std::string, std::string>>;
     /// <summary>
     /// The API client class. In production, you may initialize a single instance of this class per `APIKey`.
     /// </summary>
@@ -51,7 +50,7 @@ namespace KiteConnect
         private:  
             std::string _root = "https://api.kite.trade";
             std::string _login = "https://kite.trade/connect/login";
-            String USER_AGENT = "SapanClient";
+            std::string USER_AGENT = "SapanClient";
 
             std::string _apiKey;
             std::string _accessToken;
@@ -225,9 +224,10 @@ namespace KiteConnect
         /// </summary>
         /// <param name="AccessToken">Access token to invalidate. Default is the active access token.</param>
         /// <returns>Json response in the form of nested std::string dictionary.</returns>
-        std::string InvalidateAccessToken(std::string AccessToken = null)
+        std::string InvalidateAccessToken(std::string AccessToken = "")
         {
-            map<std::string, std::string> param;
+            ParamType param;
+            //map<std::string, std::string> param;
 
             Utils::AddIfNotNull(param, "api_key", _apiKey);
             Utils::AddIfNotNull(param, "access_token", AccessToken);
@@ -257,7 +257,7 @@ namespace KiteConnect
         /// <returns>TokenRenewResponse that contains new AccessToken and RefreshToken.</returns>
         TokenSet RenewAccessToken(std::string RefreshToken, std::string AppSecret)
         {
-            map<std::string, std::string> param;
+            ParamType param;
 
             std::string checksum = Utils::SHA256(_apiKey + RefreshToken + AppSecret);
 
@@ -312,7 +312,7 @@ namespace KiteConnect
         /// <returns>Margins for specified segment.</returns>
         UserMargin GetMargins(std::string Segment)
         {
-            std::string userMarginData = Get("user.segment_margins", map <std::string, std::string> { { "segment", Segment } });
+            std::string userMarginData = Get("user.segment_margins", ParamType (std::make_pair("segment", Segment)));
             return UserMargin(userMarginData);
         }
 
@@ -1055,7 +1055,7 @@ private:
         /// <param name="Route">URL route of API</param>
         /// <param name="Params">Additional paramerters</param>
         /// <returns>Varies according to API endpoint</returns>
-        std::string Get(std::string route, ParamType params = null)
+        std::string Get(std::string route, ParamType &params)
         {
             return Request(route, methods::GET, params);
         }
@@ -1088,7 +1088,7 @@ private:
         /// <param name="Route">URL route of API</param>
         /// <param name="Params">Additional paramerters</param>
         /// <returns>Varies according to API endpoint</returns>
-        task<http_response> Delete(std::string Route, ParamType Params = null)
+        std::string Delete(std::string Route, ParamType Params)
         {
             return Request(Route, methods::DEL, Params);
         }
