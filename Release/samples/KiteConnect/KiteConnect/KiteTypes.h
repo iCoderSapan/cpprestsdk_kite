@@ -19,8 +19,6 @@
 #include <ctime>
 #include <cstdint>
 
-#include "Utils.h"
-
 //////////////////////////////////////////////// 
 // A Simple HTTP Client to Demonstrate  
 // REST SDK Client programming model 
@@ -38,8 +36,6 @@ using namespace std;      // Use std c++ features
 
 namespace KiteConnect
 {
-    using DateTime = std::string;
-    using ParamType = vector<pair<std::string, std::string>>;
     #if 0
     /// <summary>
     /// Tick data structure
@@ -78,13 +74,7 @@ namespace KiteConnect
     /// </summary>
     struct DepthItem
     {
-        DepthItem(json::value data)
-        {
-            quantity = data["quantity"].as_number().to_uint32();
-            price = data["price"].as_double();
-            orders = data["orders"].as_number().to_uint32();
-        }
-
+        DepthItem(json::value data);
         uint32_t quantity;
         double price;
         uint32_t orders;
@@ -95,18 +85,7 @@ namespace KiteConnect
     /// </summary>
     struct Historical
     {
-        Historical(json::value jsonValueObj)
-        {
-            json::array jsonCandleObj = jsonValueObj.as_array();
-
-            timeStamp = jsonCandleObj[0].as_string();
-            open = jsonCandleObj[1].as_double();
-            high = jsonCandleObj[2].as_double();
-            low = jsonCandleObj[3].as_double();
-            close = jsonCandleObj[4].as_double();
-            volume = jsonCandleObj[5].as_number().to_uint32();
-            OI = jsonCandleObj.size() > 6 ? jsonCandleObj[6].as_number().to_uint32() : 0;
-        }
+        Historical(json::value jsonValueObj);
 
         std::string timeStamp;
         double open;
@@ -122,16 +101,7 @@ namespace KiteConnect
     /// </summary>
     struct HistoricalResponse
     {
-        HistoricalResponse(std::string jsonData)
-        {
-            json::value jsonObj = json::value::parse(jsonData);
-            json::array candlesJsonObj = jsonObj["data"]["candles"].as_array();
-
-            for(auto itr=candlesJsonObj.begin(); itr != candlesJsonObj.end(); itr++)
-            {
-                historicals.push_back(Historical(*itr));
-            }
-        }
+        HistoricalResponse(std::string jsonData);
         std::list<Historical> historicals;
     };
 
@@ -140,32 +110,7 @@ namespace KiteConnect
     /// </summary>
     struct Holding
     {
-        Holding(json::value data)
-        {
-            try
-            {
-                product = data["product"].as_string();
-                exchange = data["exchange"].as_string();
-                price = data["price"].as_double();
-                lastPrice = data["last_price"].as_double();
-                collateralQuantity = data["collateral_quantity"].as_integer();
-                PNL = data["pnl"].as_double();
-                closePrice = data["close_price"].as_double();
-                averagePrice = data["average_price"].as_double();
-                tradingSymbol = data["tradingsymbol"].as_string();
-                collateralType = data["collateral_type"].as_string();
-                T1Quantity = data["t1_quantity"].as_integer();
-                instrumentToken = data["instrument_token"].as_number().to_uint32();
-                ISIN = data["isin"].as_string();
-                realisedQuantity = data["realised_quantity"].as_integer();
-                quantity = data["quantity"].as_integer();
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + data.serialize() + e.what());
-            }
-        }
-
+        Holding(json::value data);
         std::string product;
         std::string exchange;
         double price;
@@ -188,25 +133,8 @@ namespace KiteConnect
     /// </summary>
     struct HoldingsResponse
     {
-        HoldingsResponse(std::string jsonData)
-        {
-            try
-            {
-                json::value jsonObj = json::value::parse(jsonData);
-                json::array holdings_array_data(jsonObj["data"].as_array());
-                for(auto itr=holdings_array_data.begin(); itr != holdings_array_data.end(); itr++)
-                {
-                    holdingsData.push_back(Holding(*itr));
-                }
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + jsonData + e.what());
-            }
-        }
-
+        HoldingsResponse(std::string jsonData);
         std::list<Holding> holdingsData;
-
     };
 
     /// <summary>
@@ -214,20 +142,7 @@ namespace KiteConnect
     /// </summary>
     struct ConvertPositionResponse
     {
-        ConvertPositionResponse(std::string jsonData)
-        {
-            try
-            {
-                json::value jsonObj = json::value::parse(jsonData);
-                status = jsonObj["data"].as_bool();
-                
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + jsonData + e.what());
-            }
-        }
-
+        ConvertPositionResponse(std::string jsonData);
         bool status;
     };
 
@@ -237,20 +152,7 @@ namespace KiteConnect
     struct AvailableMargin
     {
         AvailableMargin () {}
-        AvailableMargin(json::value &data)
-        {
-            try
-            {
-                adHocMargin = data["adhoc_margin"].as_double();
-                cash = data["cash"].as_double();
-                collateral = data["collateral"].as_double();
-                intradayPayin = data["intraday_payin"].as_double();
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to load data in AvailableMargin " + data.serialize() + e.what());
-            }
-        }
+        AvailableMargin(json::value &data);
 
         double adHocMargin;
         double cash;
@@ -264,25 +166,7 @@ namespace KiteConnect
     struct UtilisedMargin
     {
         UtilisedMargin() {}
-        UtilisedMargin(json::value &data)
-        {
-            try
-            {
-                debits = data["debits"].as_double();
-                exposure = data["exposure"].as_double();
-                m2MRealised = data["m2m_realised"].as_double();
-                m2MUnrealised = data["m2m_unrealised"].as_double();
-                optionPremium = data["option_premium"].as_double();
-                payout = data["payout"].as_double();
-                span = data["span"].as_double();
-                holdingSales = data["holding_sales"].as_double();
-                turnover = data["turnover"].as_double();
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to load data - UtilisedMargin " + data.serialize() + e.what());
-            }
-        }
+        UtilisedMargin(json::value &data);
 
         double debits;
         double exposure;
@@ -300,22 +184,9 @@ namespace KiteConnect
     /// </summary>
     struct UserMargin
     {
-        UserMargin() {}
-        UserMargin(json::value &data)
-        {
-            try
-            {
-                enabled = data["enabled"].as_bool();
-                net = data["net"].as_double();
-                available = AvailableMargin(data["available"]);
-                utilised = UtilisedMargin(data["utilised"]);
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + data.serialize());
-            }
-        }
-
+        UserMargin () {}
+        UserMargin(json::value &data);
+        UserMargin(std::string &jsonData);
         bool enabled;
         double net;
         AvailableMargin available;
@@ -327,21 +198,44 @@ namespace KiteConnect
     /// </summary>
     struct UserMarginsResponse
     {
-        UserMarginsResponse(std::string jsonData)
-        {
-            try
-            {
-                json::value data = json::value::parse(jsonData);
-                equity = UserMargin(data["equity"]);
-                commodity = UserMargin(data["commodity"]);
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + jsonData + e.what());
-            }
-        }
+        UserMarginsResponse(std::string jsonData);
+
         UserMargin equity;
         UserMargin commodity;
+    };
+
+    /// <summary>
+    /// Order structure
+    /// </summary>
+    struct Order
+    {
+        Order(json::value data);
+
+        double averagePrice;
+        int cancelledQuantity;
+        int disclosedQuantity;
+        std::string exchange;
+        std::string exchangeOrderId;
+        std::string exchangeTimestamp;
+        int filledQuantity;
+        uint32_t instrumentToken;
+        std::string orderId;
+        std::string orderTimestamp;
+        std::string orderType;
+        std::string parentOrderId;
+        int pendingQuantity;
+        std::string placedBy;
+        double price;
+        std::string product;
+        int quantity;
+        std::string status;
+        std::string statusMessage;
+        std::string tag;
+        std::string tradingSymbol;
+        std::string transactionType;
+        double triggerPrice;
+        std::string validity;
+        std::string variety;
     };
 
     /// <summary>
@@ -349,18 +243,8 @@ namespace KiteConnect
     /// </summary>
     struct OrderResponse
     {
-        OrderResponse(std::string jsonData)
-        {
-            try
-            {
-                json::value data = json::value::parse(jsonData);
-                order_id = data["data"]["order_id"].as_string();
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data - OrderResponse " + jsonData + e.what());
-            }
-        }
+        OrderResponse(std::string jsonData);
+
         std::string order_id;
     };
 
@@ -369,22 +253,8 @@ namespace KiteConnect
     /// </summary>
     struct GetOrdersResponse
     {
-        GetOrdersResponse(std::string jsonData)
-        {
-            try
-            {
-                json::value data = json::value::parse(jsonData);
-                json::array array_data(data["data"].as_array());
-                for(auto itr=array_data.begin(); itr != array_data.end(); itr++)
-                {
-                    orders.push_back(Order(*itr));
-                }
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + jsonData + e.what());
-            }
-        }
+        GetOrdersResponse(std::string jsonData);
+
         std::list<Order> orders;
     };
 
@@ -393,23 +263,30 @@ namespace KiteConnect
     /// </summary>
     struct OrderHistoryResponse
     {
-        OrderHistoryResponse(std::string jsonData)
-        {
-            try
-            {
-                json::value data = json::value::parse(jsonData);
-                json::array array_data(data["data"].as_array());
-                for(auto itr=array_data.begin(); itr != array_data.end(); itr++)
-                {
-                    orderHistory.push_back(Order(*itr));
-                }
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + jsonData + e.what());
-            }
-        }
+        OrderHistoryResponse(std::string jsonData);
+
         std::list<Order> orderHistory;
+    };
+
+    /// <summary>
+    /// Trade structure
+    /// </summary>
+    struct Trade
+    {
+        Trade(json::value data);
+
+        std::string tradeId;
+        std::string orderId;
+        std::string exchangeOrderId;
+        std::string tradingSymbol;
+        std::string exchange;
+        uint32_t instrumentToken;
+        std::string transactionType;
+        std::string product;
+        double averagePrice;
+        int quantity;
+        std::string fillTimestamp;
+        std::string exchangeTimestamp;
     };
 
     /// <summary>
@@ -417,22 +294,8 @@ namespace KiteConnect
     /// </summary>
     struct OrderTradesResponse
     {
-        OrderTradesResponse(std::string jsonData)
-        {
-            try
-            {
-                json::value data = json::value::parse(jsonData);
-                json::array array_data(data["data"].as_array());
-                for(auto itr=array_data.begin(); itr != array_data.end(); itr++)
-                {
-                    orderTrades.push_back(Trade(*itr));
-                }
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + jsonData + e.what());
-            }
-        }
+        OrderTradesResponse(std::string jsonData);
+
         std::list<Trade> orderTrades;
     };
     #if 0
@@ -473,46 +336,7 @@ namespace KiteConnect
     /// </summary>
     struct Position
     {
-        Position(json::value data)
-        {
-            try
-            {
-                product = data["product"].as_string();
-                overnightQuantity = data["overnight_quantity"].as_integer();
-                exchange = data["exchange"].as_string();
-                sellValue = data["sell_value"].as_double();
-                buyM2M = data["buy_m2m"].as_double();
-                lastPrice = data["last_price"].as_double();
-                tradingSymbol = data["tradingsymbol"].as_string();
-                realised = data["realised"].as_double();
-                PNL = data["pnl"].as_double();
-                multiplier = data["multiplier"].as_double();
-                sellQuantity = data["sell_quantity"].as_integer();
-                sellM2M = data["sell_m2m"].as_double();
-                buyValue = data["buy_value"].as_double();
-                buyQuantity = data["buy_quantity"].as_integer();
-                averagePrice = data["average_price"].as_double();
-                unrealised = data["unrealised"].as_double();
-                value = data["value"].as_double();
-                buyPrice = data["buy_price"].as_double();
-                sellPrice = data["sell_price"].as_double();
-                M2M = data["m2m"].as_double();
-                instrumentToken = (data["instrument_token"]).as_number().to_uint32();
-                closePrice = data["close_price"].as_double();
-                quantity = data["quantity"].as_integer();
-                dayBuyQuantity = data["day_buy_quantity"].as_integer();
-                dayBuyValue = data["day_buy_value"].as_double();
-                dayBuyPrice = data["day_buy_price"].as_double();
-                daySellQuantity = data["day_sell_quantity"].as_integer();
-                daySellValue = data["day_sell_value"].as_double();
-                daySellPrice = data["day_sell_price"].as_double();
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to pas data. " + data.serialize() + e.what());
-            }
-
-        }
+        Position(json::value data);
 
         std::string product;
         int overnightQuantity;
@@ -550,93 +374,10 @@ namespace KiteConnect
     /// </summary>
     struct PositionResponse
     {
-        PositionResponse(std::string jsonData)
-        {
-            json::value data = json::value::parse(jsonData);
-
-            json::array day_array_data(data["data"]["day"].as_array());
-            for(auto itr=day_array_data.begin(); itr != day_array_data.end(); itr++)
-            {
-                day.push_back(Position(*itr));
-            }
-            json::array net_array_data(data["data"]["net"].as_array());
-            for(auto itr=net_array_data.begin(); itr != net_array_data.end(); itr++)
-            {
-                day.push_back(Position(*itr));
-            }
-        }
+        PositionResponse(std::string jsonData);
 
         std::list<Position> day;
         std::list<Position> net;
-    };
-
-    /// <summary>
-    /// Order structure
-    /// </summary>
-    struct Order
-    {
-        Order(json::value data)
-        {
-            try
-            {
-                averagePrice = data["average_price"].as_double();
-                cancelledQuantity = data["cancelled_quantity"].as_integer();
-                disclosedQuantity = data["disclosed_quantity"].as_integer();
-                exchange = data["exchange"].as_string();
-                exchangeOrderId = data["exchange_order_id"].as_string();
-                exchangeTimestamp = data["exchange_timestamp"].as_string();
-                filledQuantity = data["filled_quantity"].as_integer();
-                instrumentToken = data["instrument_token"].as_number().to_uint32();
-                orderId = data["order_id"].as_string();
-                orderTimestamp = data["order_timestamp"].as_string();
-                orderType = data["order_type"].as_string();
-                parentOrderId = data["parent_order_id"].as_string();
-                pendingQuantity = data["pending_quantity"].as_integer();
-                placedBy = data["placed_by"].as_string();
-                price = data["price"].as_double();
-                product = data["product"].as_string();
-                quantity = data["quantity"].as_integer();
-                status = data["status"].as_string();
-                statusMessage = data["status_message"].as_string();
-                tag = data["tag"].as_string();
-                tradingSymbol = data["tradingsymbol"].as_string();
-                transactionType = data["transaction_type"].as_string();
-                triggerPrice = data["trigger_price"].as_double();
-                validity = data["validity"].as_string();
-                variety = data["variety"].as_string();
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + data.serialize() + e.what());
-            }
-
-        }
-
-        double averagePrice;
-        int cancelledQuantity;
-        int disclosedQuantity;
-        std::string exchange;
-        std::string exchangeOrderId;
-        std::string exchangeTimestamp;
-        int filledQuantity;
-        uint32_t instrumentToken;
-        std::string orderId;
-        std::string orderTimestamp;
-        std::string orderType;
-        std::string parentOrderId;
-        int pendingQuantity;
-        std::string placedBy;
-        double price;
-        std::string product;
-        int quantity;
-        std::string status;
-        std::string statusMessage;
-        std::string tag;
-        std::string tradingSymbol;
-        std::string transactionType;
-        double triggerPrice;
-        std::string validity;
-        std::string variety;
     };
 
 #if 0
@@ -862,36 +603,7 @@ namespace KiteConnect
     /// </summary>
     struct Instrument
     {
-        Instrument(map<std::string, std::string> data)
-        {
-            try
-            {
-                instrumentToken = std::stoul(data["instrument_token"]);
-                exchangeToken = std::stoul(data["exchange_token"]);
-                tradingSymbol = data["tradingsymbol"];
-                name = data["name"];
-                lastPrice = std::stod(data["last_price"]);
-                tickSize = std::stod(data["tick_size"]);
-                expiry = data["expiry"];
-                instrumentType = data["instrument_type"];
-                segment = data["segment"];
-                exchange = data["exchange"];
-
-                /* TODO: Convert it to proper double with 'e' characters 
-                if (data["strike"].Contains("e"))
-                    Strike = Decimal.Parse(data["strike"], System.Globalization.NumberStyles.Float);
-                else
-                    Strike = Convert.ToDecimal(data["strike"]);*/
-                strike = std::stod(data["strike"]);
-
-                lotSize = std::stoul(data["lot_size"]);
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. Instrument" + jsonData + e.what());
-            }
-
-        }
+        Instrument(std::map<std::string, std::string> data);
 
         uint32_t instrumentToken;
         uint32_t exchangeToken;
@@ -909,59 +621,11 @@ namespace KiteConnect
 
     struct GetInstrumentsResponse
     {
-        GetInstrumentsResponse(std::string &csvData)
-        {
-            Utils::CSVObjType instrumentsData;
-            Utils::ParseCSV(csvData, instrumentsData);
-            for (auto it = instrumentsData.begin(); it != instrumentsData.end(); ++it)
-                instruments.push_back(*it);
-        }
+        GetInstrumentsResponse(std::string &csvData);
+
         std::list<Instrument> instruments;
     };
     
-
-    /// <summary>
-    /// Trade structure
-    /// </summary>
-    struct Trade
-    {
-        Trade(json::value data)
-        {
-            try
-            {
-                tradeId = data["trade_id"].as_string();
-                orderId = data["order_id"].as_string();
-                exchangeOrderId = data["exchange_order_id"].as_string();
-                tradingSymbol = data["tradingsymbol"].as_string();
-                exchange = data["exchange"].as_string();
-                instrumentToken = data["instrument_token"].as_number().to_uint32();
-                transactionType = data["transaction_type"].as_string();
-                product = data["product"].as_string();
-                averagePrice = data["average_price"].as_double();
-                quantity = data["quantity"].as_integer();
-                fillTimestamp = data["fill_timestamp"].as_string();
-                exchangeTimestamp = data["exchange_timestamp"].as_string();
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + data.serialize() + e.what());
-            }
-
-        }
-
-        std::string tradeId;
-        std::string orderId;
-        std::string exchangeOrderId;
-        std::string tradingSymbol;
-        std::string exchange;
-        uint32_t instrumentToken;
-        std::string transactionType;
-        std::string product;
-        double averagePrice;
-        int quantity;
-        std::string fillTimestamp;
-        std::string exchangeTimestamp;
-    };
 /*
     /// <summary>
     /// Trigger range structure
@@ -994,38 +658,7 @@ namespace KiteConnect
     /// </summary>
     struct User
     {
-        User(std::string jsonData)
-        {
-            try
-            {
-                json::value data = json::value::parse(jsonData); 
-                apiKey = data["data"]["api_key"].as_string();
-                json::array array_data(data["data"]["products"].as_array());
-                for(auto itr=data["data"]["products"].as_array().begin(); itr != data["data"]["products"].as_array().end(); itr++)
-                {
-                    products.push_back((*itr).as_string());
-                }
-                Utils::JsonArrayDeserialize(data["data"]["products"].as_array(), products);
-                userName = data["data"]["user_name"].as_string();
-                userShortName = data["data"]["user_shortname"].as_string();
-                avatarURL = data["data"]["avatar_url"].as_string();
-                broker = data["data"]["broker"].as_string();
-                accessToken = data["data"]["access_token"].as_string();
-                publicToken = data["data"]["public_token"].as_string();
-                refreshToken = data["data"]["refresh_token"].as_string();
-                userType = data["data"]["user_type"].as_string();
-                userId = data["data"]["user_id"].as_string();
-                loginTime = TIME(data["data"]["login_time"]);
-                Utils::JsonArrayDeserialize(data["data"]["exchanges"].as_array(), exchanges);
-                Utils::JsonArrayDeserialize(data["data"]["order_types"].as_array(), orderTypes);
-                Email = data["data"]["email"].as_string();
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + jsonData + e.what());
-            }
-
-        }
+        User(std::string jsonData);
 
         std::string apiKey;
         std::vector<string> products;
@@ -1046,20 +679,8 @@ namespace KiteConnect
 
     struct TokenSet
     {
-        TokenSet(std::string jsonData)
-        {
-            try
-            {
-                json::value data = json::value::parse(jsonData);
-                userId = data["data"]["user_id"].as_string();
-                accessToken = data["data"]["access_token"].as_string();
-                refreshToken = data["data"]["refresh_token"].as_string();
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + jsonData + e.what());
-            }
-        }
+        TokenSet(std::string jsonData);
+
         std::string userId;
         std::string accessToken;
         std::string refreshToken;
@@ -1070,26 +691,7 @@ namespace KiteConnect
     /// </summary>
     struct Profile
     {
-        Profile(std::string jsonData)
-        {
-            try
-            {
-                json::value data = json::value::parse(jsonData);
-                products = Utils::JsonArrayDeserialize(data["data"]["products"].as_array(), products); userName = data["data"]["user_name"];
-                userShortName = data["data"]["user_shortname"].as_string();
-                avatarURL = data["data"]["avatar_url"].as_string();
-                broker = data["data"]["broker"].as_string();
-                userType = data["data"]["user_type"].as_string();
-                exchanges = Utils::JsonArrayDeserialize(data["data"]["exchanges"].as_array(), exchanges);
-                orderTypes = Utils::JsonArrayDeserialize(data["data"]["order_types"].as_array(), orderTypes);
-                email = data["data"]["email"].as_string();
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + jsonData + e.what());
-            }
-
-        }
+        Profile(std::string jsonData);
 
         vector<string> products;
         std::string userName;
@@ -1107,86 +709,7 @@ namespace KiteConnect
     /// </summary>
     struct Quote
     {
-        Quote(json::value data)
-        {
-            try
-            {
-                instrumentToken = data["instrument_token"].as_number().to_uint32();
-                timestamp = data["timestamp"].as_string();
-                lastPrice = data["last_price"].as_double();
-
-                change = data["net_change"].as_double();
-
-                open = data["ohlc"]["open"].as_double();
-                close = data["ohlc"]["close"].as_double();
-                low = data["ohlc"]["low"].as_double();
-                high = data["ohlc"]["high"].as_double();       
-
-                if (data.has_field("last_quantity"))
-                {
-                    // Non index quote
-                    lastQuantity = data["last_quantity"].as_number().to_uint32();
-                    lastTradeTime = data["last_trade_time"].as_string();
-                    averagePrice = data["average_price"].as_double();
-                    volume = data["volume"].as_number().to_uint32();
-
-                    buyQuantity = data["buy_quantity"].as_number().to_uint32();
-                    sellQuantity = data["sell_quantity"].as_number().to_uint32();
-
-                    OI = data["oi"].as_number().to_uint32();
-
-                    OIDayHigh = data["oi_day_high"].as_number().to_uint32();
-                    OIDayLow = data["oi_day_low"].as_number().to_uint32();
-
-                    lowerCircuitLimit = data["lower_circuit_limit"].as_double();
-                    upperCircuitLimit = data["upper_circuit_limit"].as_double();
-
-                    if (data.has_field("depth"))
-                    {
-                        if(data.has_field("buy"))
-                        {
-                            json::array buy_depth(data["buy"].as_array());
-                            for(auto itr=buy_depth.begin(); itr != buy_depth.end(); itr++)
-                            {
-                                bids.push_back(DepthItem(*itr));
-                            }
-                        }
-                        if (data.has_field("sell"))
-                        {
-                            json::array sell_depth = data["sell"].as_array();
-                            for(auto itr=sell_depth.begin(); itr != sell_depth.end(); itr++)
-                            {
-                                offers.push_back(DepthItem(*itr));
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    // Index quote
-                    lastQuantity = 0;
-                    lastTradeTime = "";
-                    averagePrice = 0;
-                    volume = 0;
-
-                    buyQuantity = 0;
-                    sellQuantity = 0;
-
-                    OI = 0;
-
-                    OIDayHigh = 0;
-                    OIDayLow = 0;
-
-                    lowerCircuitLimit = 0;
-                    upperCircuitLimit = 0;
-                }
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + data.serialize() + e.what());
-            }
-
-        }
+        Quote(json::value data);
 
         uint32_t instrumentToken;
         double lastPrice;
@@ -1219,23 +742,8 @@ namespace KiteConnect
     /// </summary>
     struct QuoteResponse
     {
-        QuoteResponse(std::string jsonData, vector <std::string> instrumentIds)
-        {
-            try
-            {
-                json::value jsonObj = json::value::parse(jsonData);
-                json::value data = jsonObj["data"];
-                for (auto itr = instrumentIds.begin(); itr != instrumentIds.end(); itr++)
-                {
-                    quoteList.push_back(Quote(data[*itr]));
-                }
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + jsonData + e.what());
-            }
+        QuoteResponse(std::string jsonData, vector <std::string> instrumentIds);
 
-        }
         std::list <Quote> quoteList;
     };
 
@@ -1244,24 +752,8 @@ namespace KiteConnect
     /// </summary>
     struct OHLC
     {
-        OHLC(json::value data)
-        {
-            try
-            {
-                instrumentToken = data["instrument_token"].as_number().to_uint32();
-                lastPrice = data["last_price"].as_double();
+        OHLC(json::value data);
 
-                open = data["ohlc"]["open"].as_double();
-                close = data["ohlc"]["close"].as_double();
-                low = data["ohlc"]["low"].as_double();
-                high = data["ohlc"]["high"].as_double();
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + data.serialize() + e.what());
-            }
-
-        }
         uint32_t instrumentToken;
         double lastPrice;
         double open;
@@ -1275,23 +767,8 @@ namespace KiteConnect
     /// </summary>
     struct OHLCResponse
     {
-        OHLCResponse(std::string jsonData, vector<std::string> instrumentIds)
-        {
-            try
-            {
-                json::value jsonObj = json::value::parse(jsonData);
-                json::value data = jsonObj["data"];
-                for (auto itr = instrumentIds.begin(); itr != instrumentIds.end(); itr++)
-                {
-                    ohlcList.push_back(OHLC(data[*itr]));
-                }
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + jsonData + e.what());
-            }
+        OHLCResponse(std::string jsonData, vector<std::string> instrumentIds);
 
-        }
         std::list<OHLC> ohlcList;
     };
 
@@ -1300,19 +777,8 @@ namespace KiteConnect
     /// </summary>
     struct LTP
     {
-        LTP(json::value data)
-        {
-            try
-            {
-                instrumentToken = data["instrument_token"].as_number().to_uint32();
-                lastPrice = data["last_price"].as_double();
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + data.serialize() + e.what());
-            }
+        LTP(json::value data);
 
-        }
         uint32_t instrumentToken;
         double lastPrice;
     };
@@ -1322,23 +788,8 @@ namespace KiteConnect
     /// </summary>
     struct LTPResponse
     {
-        LTPResponse(std::string jsonData, vector<std::string> instrumentIds)
-        {
-            try
-            {
-                json::value jsonObj = json::value::parse(jsonData);
-                json::value data = jsonObj["data"];
-                for (auto itr = instrumentIds.begin(); itr != instrumentIds.end(); itr++)
-                {
-                    ltpList.push_back(LTP(data[*itr]));
-                }
-            }
-            catch (std::exception e)
-            {
-                throw std::runtime_error("Unable to parse data. " + jsonData + e.what());
-            }
+        LTPResponse(std::string jsonData, vector<std::string> instrumentIds);
 
-        }
         std::list<LTP> ltpList;
     };
 

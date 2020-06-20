@@ -6,6 +6,7 @@ set(TARGET LibKiteConnect)
 set(SOURCES
     Kite.cpp
     KiteTypes.h
+    Constants.h
     Utils.h
     Utils.cpp
 )

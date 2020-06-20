@@ -39,6 +39,8 @@
         "new": "cpp",
         "sstream": "cpp",
         "streambuf": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "iosfwd": "cpp",
+        "stdexcept": "cpp"
     }
 }

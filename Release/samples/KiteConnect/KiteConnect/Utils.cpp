@@ -93,7 +93,7 @@ namespace KiteConnect
     /// </summary>
     /// <param name="Json">Json string to deserialize.</param>
     /// <returns>Json in the form of nested string dictionary.</returns>
-    static std::vector<std::string>& JsonArrayDeserialize(json::array jsonArray, std::vector<std::string> &result)
+    std::vector<std::string>& Utils::JsonArrayDeserialize(json::array jsonArray, std::vector<std::string> &result)
     {
         for(auto itr = jsonArray.begin(); itr != jsonArray.end(); itr++)
         {
@@ -143,9 +143,9 @@ namespace KiteConnect
     /// <param name="data">Response of instruments API.</param>
     /// <param name="">Response of instruments API.</param>
     /// <returns>CSV data as array of nested string dictionary.</returns>
-    static void ParseCSV(std::string &data, CSVObjType &csvObj)
+    void Utils::ParseCSV(std::string &data, Utils::CSVObjType &csvObj)
     {
-        CSVObjType instruments;
+        Utils::CSVObjType instruments;
         /* TODO: Fill all the details here as below
             * [map of each row with parameters and values]->[map]->[map]
         string[] lines = Data.Split('\n');
@@ -192,10 +192,10 @@ namespace KiteConnect
     /// <param name="Params">Dictionary to add the key-value pair</param>
     /// <param name="Key">Key of the parameter</param>
     /// <param name="Value">Value of the parameter</param>
-    inline void Utils::AddIfNotNull(ParamType& params, std::string Key, std::string &value)
+    inline void Utils::AddIfNotNull(ParamType& params, std::string key, std::string &value)
     {
         if (!value.empty())
-            params[Key] = value;
+            params.push_back(std::make_pair(key, value));
     }
 
     /// <summary>

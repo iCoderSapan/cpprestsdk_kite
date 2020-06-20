@@ -1,4 +1,5 @@
-﻿/*using System;
+﻿/*
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,14 +9,18 @@ using System.Reflection;
 */
 #include <string>
 #include <cpprest/http_client.h> 
+#include <cpprest/http_headers.h>
+#include <cpprest/http_msg.h>
 #include <cpprest/filestream.h> 
 //----- Some standard C++ headers emitted for brevity
-#include "KiteTypes.h"
 #include "cpprest/json.h" 
 #include "cpprest/http_listener.h" 
 #include "cpprest/uri.h" 
 #include "cpprest/asyncrt_utils.h"
 #include <boost/algorithm/string.hpp>
+
+#include "KiteTypes.h"
+#include "Utils.h"
 
 #include <iomanip>
 #include <sstream>
@@ -55,14 +60,14 @@ namespace KiteConnect
             std::string _apiKey;
             std::string _accessToken;
             bool _enableLogging;
-            shared_ptr<web::web_proxy> _proxy;
+            web::web_proxy _proxy;
             std::chrono::seconds _timeout;
             shared_ptr<http_client> httpClient;
             std::function<void(void)> _sessionHook;
 
             //private Cache cache = new Cache();
 
-            const map<std::string, std::string> _routes = 
+            const std::map<std::string, std::string> _routes = 
             {
                 {"parameters", "/parameters"},
                 {"api.token", "/session/token"},
@@ -128,7 +133,7 @@ namespace KiteConnect
         /// <param name="Timeout">Time in seconds for which  the API client will wait for a request to complete before it fails</param>
         /// <param name="Proxy">To set proxy for http request. Should be an object of WebProxy.</param>
         /// <param name="Pool">Number of connections to server. Client will reuse the connections if they are alive.</param>
-        Kite(std::string APIKey, std::string accessToken =nullptr, std::string root = nullptr, bool debug = false, int timeout = 7,  shared_ptr<web::web_proxy> proxy = nullptr, int Pool = 2)
+        Kite(std::string APIKey, web::web_proxy proxy, std::string accessToken = "", std::string root = "", bool debug = false, int timeout = 7, int Pool = 2)
         {
             _accessToken = accessToken;
             _apiKey = APIKey;
@@ -142,10 +147,10 @@ namespace KiteConnect
             _timeout = std::chrono::seconds(timeout);
             http_client_config clientConfig;
             clientConfig.set_timeout(timeout);
-            if(proxy != nullptr) {
-                clientConfig.set_proxy(*proxy);
-            }
-            httpClient = make_shared<http_client>(_root, clientConfig); //Fill in the root ur
+            // if(proxy != "") {
+            //     clientConfig.set_proxy(*proxy);
+            // }
+            httpClient = std::make_shared<http_client>(http_client(_root, clientConfig)); //Fill in the root ur
             //ServicePointManager.DefaultConnectionLimit = Pool;
         }
 
@@ -206,14 +211,13 @@ namespace KiteConnect
         /// <returns>User structure with tokens and profile data</returns>
         User GenerateSession(std::string RequestToken, std::string AppSecret)
         {
-            std::string checksum = Utils:::SHA256(_apiKey + RequestToken + AppSecret);
+            std::string checksum = Utils::SHA256(_apiKey + RequestToken + AppSecret);
 
-            map<std::string, std::string> data{
+            ParamType param{
                 {"api_key", _apiKey},
                 {"request_token", RequestToken},
                 {"checksum", checksum}
             };
-            shared_ptr<map<std::string, std::string>> param = make_shared<map<std::string, std::string>>(data);
 
             std::string jsonData = Post("api.token", param);
             return User(jsonData);
@@ -242,10 +246,10 @@ namespace KiteConnect
         /// <returns>Json response in the form of nested std::string dictionary.</returns>
         std::string InvalidateRefreshToken(std::string RefreshToken)
         {
-            map<std::string, std::string> param;
+            ParamType param;
 
-            Utils:::AddIfNotNull(param, "api_key", _apiKey);
-            Utils:::AddIfNotNull(param, "refresh_token", RefreshToken);
+            Utils::AddIfNotNull(param, "api_key", _apiKey);
+            Utils::AddIfNotNull(param, "refresh_token", RefreshToken);
             return Delete("api.token", param);
         }
 
@@ -312,7 +316,10 @@ namespace KiteConnect
         /// <returns>Margins for specified segment.</returns>
         UserMargin GetMargins(std::string Segment)
         {
-            std::string userMarginData = Get("user.segment_margins", ParamType (std::make_pair("segment", Segment)));
+            ParamType params {
+                {"segment", Segment}
+            };
+            std::string userMarginData = Get("user.segment_margins", params);
             return UserMargin(userMarginData);
         }
 
@@ -335,7 +342,7 @@ namespace KiteConnect
         /// <param name="Variety">You can place orders of varieties; regular orders, after market orders, cover orders etc. </param>
         /// <param name="Tag">An optional tag to apply to an order to identify it (alphanumeric, max 8 chars)</param>
         /// <returns>Json response in the form of nested std::string dictionary.</returns>
-        PlaceOrderResponse PlaceOrder(
+        OrderResponse PlaceOrder(
             std::string exchange,
             std::string tradingSymbol,
             std::string transactionType,
@@ -352,25 +359,25 @@ namespace KiteConnect
             std::string variety = Constants::VARIETY_REGULAR,
             std::string tag = "")
         {
-            map<std::string, std::string> param;
+            ParamType params;
 
-            Utils::AddIfNotNull(param, "exchange", exchange);
-            Utils::AddIfNotNull(param, "tradingsymbol", tradingSymbol);
-            Utils::AddIfNotNull(param, "transaction_type", transactionType);
-            Utils::AddIfNotNull(param, "quantity", std::to_string(quantity));
-            Utils::AddIfNotNull(param, "price", std::to_string(price));
-            Utils::AddIfNotNull(param, "product", product);
-            Utils::AddIfNotNull(param, "order_type", orderType);
-            Utils::AddIfNotNull(param, "validity", validity);
-            Utils::AddIfNotNull(param, "disclosed_quantity", std::to_string(disclosedQuantity));
-            Utils::AddIfNotNull(param, "trigger_price", std::to_string(triggerPrice));
-            Utils::AddIfNotNull(param, "squareoff", std::to_string(squareOffValue));
-            Utils::AddIfNotNull(param, "stoploss", std::to_string(stoplossValue));
-            Utils::AddIfNotNull(param, "trailing_stoploss", std::to_string(trailingStoploss));
-            Utils::AddIfNotNull(param, "variety", variety);
-            Utils::AddIfNotNull(param, "tag", tag);
+            Utils::AddIfNotNull(params, "exchange", exchange);
+            Utils::AddIfNotNull(params, "tradingsymbol", tradingSymbol);
+            Utils::AddIfNotNull(params, "transaction_type", transactionType);
+            Utils::AddIfNotNull(params, "quantity", std::to_string(quantity));
+            Utils::AddIfNotNull(params, "price", std::to_string(price));
+            Utils::AddIfNotNull(params, "product", product);
+            Utils::AddIfNotNull(params, "order_type", orderType);
+            Utils::AddIfNotNull(params, "validity", validity);
+            Utils::AddIfNotNull(params, "disclosed_quantity", std::to_string(disclosedQuantity));
+            Utils::AddIfNotNull(params, "trigger_price", std::to_string(triggerPrice));
+            Utils::AddIfNotNull(params, "squareoff", std::to_string(squareOffValue));
+            Utils::AddIfNotNull(params, "stoploss", std::to_string(stoplossValue));
+            Utils::AddIfNotNull(params, "trailing_stoploss", std::to_string(trailingStoploss));
+            Utils::AddIfNotNull(params, "variety", variety);
+            Utils::AddIfNotNull(params, "tag", tag);
 
-            std::string jsonResp = Post("orders.place", param);
+            std::string jsonResp = Post("orders.place", params);
             return OrderResponse(jsonResp);
         }
 
@@ -393,52 +400,52 @@ namespace KiteConnect
         /// <returns>Json response in the form of nested std::string dictionary.</returns>
         OrderResponse ModifyOrder(
             std::string orderId,
-            std::string parentOrderId = null,
-            std::string exchange = null,
-            std::string tradingSymbol = null,
-            std::string transactionType = null,
-            std::string quantity = null,
-            double price = null,
-            std::string product = null,
-            std::string orderType = null,
-            std::string validity = Constants.VALIDITY_DAY,
-            int disclosedQuantity = null,
-            double triggerPrice = null,
+            std::string parentOrderId = "",
+            std::string exchange = "",
+            std::string tradingSymbol = "",
+            std::string transactionType = "",
+            std::string quantity = "",
+            double price = 0.0,
+            std::string product = "",
+            std::string orderType = "",
+            std::string validity = Constants::VALIDITY_DAY,
+            int disclosedQuantity = 0,
+            double triggerPrice = 0.0,
             std::string variety = Constants::VARIETY_REGULAR)
         {
-            map<std::string, std::string> param;
+            ParamType params;
 
-            std::string varietyString = Variety;
-            std::string productString = Product;
+            std::string varietyString = variety;
+            std::string productString = product;
 
             if ((productString == "bo" || productString == "co") && varietyString != productString)
-                throw new Exception(String.Format("Invalid variety. It should be: {}", productString));
+                throw std::runtime_error("Invalid variety. It should be: " + productString);
 
-            Utils::AddIfNotNull(param, "order_id", orderId);
-            Utils::AddIfNotNull(param, "parent_order_id", parentOrderId);
-            Utils::AddIfNotNull(param, "trigger_price", std::to_string(triggerPrice));
-            Utils::AddIfNotNull(param, "variety", variety);
+            Utils::AddIfNotNull(params, "order_id", orderId);
+            Utils::AddIfNotNull(params, "parent_order_id", parentOrderId);
+            Utils::AddIfNotNull(params, "trigger_price", std::to_string(triggerPrice));
+            Utils::AddIfNotNull(params, "variety", variety);
 
             if (varietyString == "bo" && productString == "bo")
             {
-                Utils::AddIfNotNull(param, "quantity", quantity);
-                Utils::AddIfNotNull(param, "price", std::to_string(price));
-                Utils::AddIfNotNull(param, "disclosed_quantity", std::to_string(disclosedQuantity));
+                Utils::AddIfNotNull(params, "quantity", quantity);
+                Utils::AddIfNotNull(params, "price", std::to_string(price));
+                Utils::AddIfNotNull(params, "disclosed_quantity", std::to_string(disclosedQuantity));
             }
             else if (varietyString != "co" && productString != "co")
             {
-                Utils::AddIfNotNull(param, "exchange", exchange);
-                Utils::AddIfNotNull(param, "tradingsymbol", tradingSymbol);
-                Utils::AddIfNotNull(param, "transaction_type", transactionType);
-                Utils::AddIfNotNull(param, "quantity", quantity);
-                Utils::AddIfNotNull(param, "price", std::to_string(price));
-                Utils::AddIfNotNull(param, "product", product);
-                Utils::AddIfNotNull(param, "order_type", orderType);
-                Utils::AddIfNotNull(param, "validity", validity);
-                Utils::AddIfNotNull(param, "disclosed_quantity", std::to_string(disclosedQuantity));
+                Utils::AddIfNotNull(params, "exchange", exchange);
+                Utils::AddIfNotNull(params, "tradingsymbol", tradingSymbol);
+                Utils::AddIfNotNull(params, "transaction_type", transactionType);
+                Utils::AddIfNotNull(params, "quantity", quantity);
+                Utils::AddIfNotNull(params, "price", std::to_string(price));
+                Utils::AddIfNotNull(params, "product", product);
+                Utils::AddIfNotNull(params, "order_type", orderType);
+                Utils::AddIfNotNull(params, "validity", validity);
+                Utils::AddIfNotNull(params, "disclosed_quantity", std::to_string(disclosedQuantity));
             }
 
-            std::string jsonResp = Put("orders.modify", param);
+            std::string jsonResp = Put("orders.modify", params);
             return OrderResponse(jsonResp);
         }
 
@@ -451,15 +458,15 @@ namespace KiteConnect
         /// <returns>Json response in the form of nested std::string dictionary.</returns>
         OrderResponse CancelOrder(std::string orderId,
                                   std::string variety = Constants::VARIETY_REGULAR,
-                                  std::string parentOrderId = null)
+                                  std::string parentOrderId = "")
         {
-            map<std::string, std::string> param;
+            ParamType params;
 
-            Utils::AddIfNotNull(param, "order_id", orderId);
-            Utils::AddIfNotNull(param, "parent_order_id", parentOrderId);
-            Utils::AddIfNotNull(param, "variety", variety);
+            Utils::AddIfNotNull(params, "order_id", orderId);
+            Utils::AddIfNotNull(params, "parent_order_id", parentOrderId);
+            Utils::AddIfNotNull(params, "variety", variety);
 
-            return OrderResponse(Delete("orders.cancel", param));
+            return OrderResponse(Delete("orders.cancel", params));
         }
 
         /// <summary>
@@ -478,7 +485,7 @@ namespace KiteConnect
         /// <returns>List of order objects.</returns>
         OrderHistoryResponse GetOrderHistory(std::string OrderId)
         {
-            map<std::string, std::string> param {
+            ParamType param {
                 {"order_id", OrderId},
             };
 
@@ -492,12 +499,11 @@ namespace KiteConnect
         /// </summary>
         /// <param name="OrderId">is the ID of the order (optional) whose trades are to be retrieved. If no `OrderId` is specified, all trades for the day are returned.</param>
         /// <returns>List of trades of given order.</returns>
-        OrderTradesResponse GetOrderTrades(std::string orderId = null)
+        OrderTradesResponse GetOrderTrades(std::string orderId = "")
         {
-            Dictionary<std::string, dynamic> tradesdata;
             if (!orderId.empty())
             {
-                map<std::string, std::string> param 
+                ParamType param 
                 {
                    {"order_id", orderId}
                 };
@@ -547,17 +553,17 @@ namespace KiteConnect
             std::string oldProduct,
             std::string newProduct)
         {
-            map <std::string, std::string> param;
+            ParamType params;
 
-            Utils::AddIfNotNull(param, "exchange", exchange);
-            Utils::AddIfNotNull(param, "tradingsymbol", tradingSymbol);
-            Utils::AddIfNotNull(param, "transaction_type", transactionType);
-            Utils::AddIfNotNull(param, "position_type", positionType);
-            Utils::AddIfNotNull(param, "quantity", std::string(quantity));
-            Utils::AddIfNotNull(param, "old_product", oldProduct);
-            Utils::AddIfNotNull(param, "new_product", newProduct);
+            Utils::AddIfNotNull(params, "exchange", exchange);
+            Utils::AddIfNotNull(params, "tradingsymbol", tradingSymbol);
+            Utils::AddIfNotNull(params, "transaction_type", transactionType);
+            Utils::AddIfNotNull(params, "position_type", positionType);
+            Utils::AddIfNotNull(params, "quantity", std::to_string(quantity));
+            Utils::AddIfNotNull(params, "old_product", oldProduct);
+            Utils::AddIfNotNull(params, "new_product", newProduct);
 
-            return ConvertPositionResonse(Put("portfolio.positions.modify", param));
+            return ConvertPositionResponse(Put("portfolio.positions.modify", params));
         }
 
         /// <summary>
@@ -567,12 +573,12 @@ namespace KiteConnect
         /// </summary>
         /// <param name="Exchange">Name of the exchange</param>
         /// <returns>List of instruments.</returns>
-        List<Instrument> GetInstruments(std::string exchange = null)
+        GetInstrumentsResponse GetInstruments(std::string exchange = "")
         {
             ParamType param;
             std::string instrumentsData;
 
-            if (exchange.empty()))
+            if (exchange.empty())
                 instrumentsData = Get("market.instruments.all", param);
             else
             {
@@ -592,7 +598,7 @@ namespace KiteConnect
             ParamType param;
             for (int idx = 0; idx < instrumentIds.size(); idx++)
             {
-                param[idx] = make_pair<std::string, std::string>("i", instrumentIds[idx]);
+                param[idx] = {"i", instrumentIds[idx]};
             }
 
             std::string quoteResponse= Get("market.quote", param);
@@ -610,7 +616,7 @@ namespace KiteConnect
             ParamType param;
             for (int idx = 0; idx < instrumentIds.size(); idx++)
             {
-                param[idx] = make_pair<std::string, std::string>("i", instrumentIds[idx]);
+                param[idx] = {"i", instrumentIds[idx]};
             }
 
             std::string ohlcResponse= Get("market.ohlc", param);
@@ -627,7 +633,7 @@ namespace KiteConnect
             ParamType param;
             for (int idx = 0; idx < instrumentIds.size(); idx++)
             {
-                param[idx] = make_pair<std::string, std::string>("i", instrumentIds[idx]);
+                param[idx] = {"i", instrumentIds[idx]};
             }
 
             std::string ohlcResponse= Get("market.ltp", param);
@@ -887,7 +893,7 @@ namespace KiteConnect
             std::string TradingSymbol,
             std::string TransactionType,
             double Amount,
-            double Quantity = null,
+            double Quantity = "",
             std::string Tag = "")
         {
             var param = new Dictionary<std::string, dynamic>();
@@ -1055,7 +1061,7 @@ private:
         /// <param name="Route">URL route of API</param>
         /// <param name="Params">Additional paramerters</param>
         /// <returns>Varies according to API endpoint</returns>
-        std::string Get(std::string route, ParamType &params)
+        std::string Get(std::string route, ParamType params = {{}})
         {
             return Request(route, methods::GET, params);
         }
@@ -1066,9 +1072,9 @@ private:
         /// <param name="Route">URL route of API</param>
         /// <param name="Params">Additional paramerters</param>
         /// <returns>Varies according to API endpoint</returns>
-        std::string Post(std::string route, ParamType params = nullptr)
+        std::string Post(std::string route, ParamType params = {{}})
         {
-            return Request(Route, methods::POST, params);
+            return Request(route, methods::POST, params);
         }
 
         /// <summary>
@@ -1077,9 +1083,9 @@ private:
         /// <param name="Route">URL route of API</param>
         /// <param name="Params">Additional paramerters</param>
         /// <returns>Varies according to API endpoint</returns>
-        task<http_response> Put(std::string Route, ParamType Params = null)
+        std::string Put(std::string route, ParamType Params = {{}})
         {
-            return Request(Route, methods::PUT, Params);
+            return Request(route, methods::PUT, Params);
         }
 
         /// <summary>
@@ -1088,23 +1094,26 @@ private:
         /// <param name="Route">URL route of API</param>
         /// <param name="Params">Additional paramerters</param>
         /// <returns>Varies according to API endpoint</returns>
-        std::string Delete(std::string Route, ParamType Params)
+        std::string Delete(std::string route, ParamType Params)
         {
-            return Request(Route, methods::DEL, Params);
+            return Request(route, methods::DEL, Params);
         }
 
         /// <summary>
         /// Adds extra headers to request
         /// </summary>
         /// <param name="Req">Request object to add headers</param>
-        private void AddExtraHeaders(http_client &requent)
+
+        private:
+
+        void AddExtraHeaders(http_request &request)
         {
             request.headers().add("User-Agent", USER_AGENT);
             request.headers().add("X-Kite-Version", "3");
             request.headers().add(header_names::authorization, "token " + _apiKey + ":" + _accessToken);
             /*
             var KiteAssembly = System.Reflection.Assembly.GetAssembly(typeof(Kite));
-            if (KiteAssembly != null)
+            if (KiteAssembly != "")
                 Req.UserAgent = "KiteConnect.Net/" + KiteAssembly.GetName().Version;
             req.Headers.Add("User-Agent", USER_AGENT)            ;
             Req.Headers.Add("X-Kite-Version", "3");
@@ -1116,7 +1125,7 @@ private:
             //}
 
             Req.Timeout = _timeout;
-            if (_proxy != null) Req.Proxy = _proxy;
+            if (_proxy != "") Req.Proxy = _proxy;
 
             if (_enableLogging)
             {
@@ -1135,22 +1144,21 @@ private:
         /// <param name="Method">Method of HTTP request</param>
         /// <param name="Params">Additional paramerters</param>
         /// <returns>Varies according to API endpoint</returns>
-        std::string Request(std::string route, std::string method, ParamType params = null)
+        std::string Request(std::string route, std::string method, ParamType params = {{}})
         {
-            std::string url = _root + _routes[Route];
-            http_response webResponse;
-
-            if (Params is null)
-                Params = ;
+            std::string url = _root + _routes.at(route);
 
             if (url.find('{') != std::string::npos)
             {
+                if(params.size() == 0)
+                    throw std::runtime_error("Parameters are missing");
+
                 for (auto it=params.begin(); it!=params.end(); ++it) 
                 {
-                    if((size_t loc=url.find("{"+it->first+"}")) != std::string::npos) 
+                    if(size_t loc = url.find("{"+it->first+"}") != std::string::npos)
                     {
-                        url.replace(loc, it->first.length+2, it->second);
-                        params.erase(it->first);
+                        url.replace(loc, it->first.length()+2, it->second);
+                        //params.erase(it);
                     }
                 }
                 /*
@@ -1176,7 +1184,7 @@ private:
                     //std::cout << it->first << " => " << it->second << '\n';
                     paramEncoder.append_query(U(it->first), U(it->second));
             }
-            std::string paramString(dataEncoder.erase(2)); /*append_query() adds `/?` at the begining */
+            std::string paramString(paramEncoder.to_string().erase(2)); /*append_query() adds `/?` at the begining */
             //HttpWebRequest request;
             //string paramString = String.Join("&", Params.Select(x => Utils::BuildParam(x.Key, x.Value)));
             http_request webRequest(method);
@@ -1212,22 +1220,23 @@ private:
             webRequest.set_request_uri(route);
 
             std::string body;
-            http::details::mime_types contentType;
+            std::string contentType;
             http::status_code status;
 
             // Send request and wait for the response
-            pplx::task<web::http::http_response> webResponse =  httpClient.request(webRequest);
+            pplx::task<web::http::http_response> webResponse =  httpClient->request(webRequest);
+
             try { 
                 //-- All Taskss will get triggered here 
                 webResponse.wait();
                 body = webResponse.get().extract_string().get();
                 contentType = http::details::mime_types::application_json;
-                status = webResponse.status_code();
+                status = webResponse.get().status_code();
                 std::cout<<"Response received:\n";
             }
             catch (const std::exception &e) {
-                    cout<<("Error exception: "<<e.what())<<endl;
-                    throw e;
+                    cout<<"Error exception: "<<e.what()<<endl;
+                    throw std::runtime_error("Process response is invalid - " + body + e.what());
             }
             
             //TODO if (_enableLogging) Console.WriteLine("DEBUG: " + (int)((HttpWebResponse)webResponse).StatusCode + " " + response + "\n");
@@ -1243,25 +1252,45 @@ private:
                     web::json::value obj = web::json::value::parse(body);
 
                     if (obj.has_string_field("error_type"))
-                        errorType = obj["error_type"];
-
+                        errorType = obj["error_type"].as_string();
                     if (obj.has_string_field("message"))
-                        message = obj["message"];
+                        message = obj["message"].as_string();
 
-                    switch (errorType)
+                    // Error handling
+                    enum ErrorCodes {
+                        UndefinedCode,
+                        GeneralException,
+                        TokenException,
+                        PermissionException,
+                        OrderException,
+                        InputException,
+                        DataException,
+                        NetworkException,
+                        EndCode
+                    };
+                    std::map<std::string, ErrorCodes> ErrorMap;
+                    ErrorMap["GeneralException"] = GeneralException;
+                    ErrorMap["TokenException"] = TokenException;
+                    ErrorMap["PermissionException"] = PermissionException;
+                    ErrorMap["OrderException"] = OrderException;
+                    ErrorMap["InputException"] = InputException;
+                    ErrorMap["DataException"] = DataException;
+                    ErrorMap["NetworkException"] = NetworkException;
+
+                    switch (ErrorMap[errorType])
                     {
-                        case "GeneralException": throw new GeneralException(message, status);
-                        case "TokenException":
+                        case GeneralException: throw std::runtime_error("General Exception:" + message + ":" + std::to_string(status));
+                        case TokenException:
                             {
-                                _sessionHook.Invoke();
-                                throw new TokenException(message, status);
+                                _sessionHook(); // Invoke the callback
+                                throw std::runtime_error("Token Exception:" + message + ":" + std::to_string(status));
                             }
-                        case "PermissionException": throw new PermissionException(message, status);
-                        case "OrderException": throw new OrderException(message, status);
-                        case "InputException": throw new InputException(message, status);
-                        case "DataException": throw new DataException(message, status);
-                        case "NetworkException": throw new NetworkException(message, status);
-                        default: throw new GeneralException(message, status);
+                        case PermissionException: throw std::runtime_error("Permission Exception" + message + ":" + std::to_string(status));
+                        case OrderException: throw std::runtime_error("Order Exception" + message + ":" + std::to_string(status));
+                        case InputException: throw std::runtime_error("Input Exception" + message + ":" + std::to_string(status));
+                        case DataException: throw std::runtime_error("Data Exception" + message + ":" + std::to_string(status));
+                        case NetworkException: throw std::runtime_error("Network Exception" + message + ":" + std::to_string(status));
+                        default: throw std::runtime_error("Unknown Exception:" + message + ":" + std::to_string(status));
                     }
                 }
                 return body;
@@ -1269,9 +1298,11 @@ private:
             else if (contentType == "text/csv")
                 return body;
             else
-                throw new DataException("Unexpected content type " + webResponse.ContentType + " " + body);
+                throw std::runtime_error("Unexpected content type " + 
+                      webResponse.get().headers().content_type() + " " + body);
         }
 
         //#endregion
-    }
+    };
 }
+

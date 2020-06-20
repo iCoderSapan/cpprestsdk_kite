@@ -15,18 +15,20 @@ using System.Text.RegularExpressions;
 #include <list>
 #include <vector>
 #include "cpprest/json.h"
-
-#define TIME(x) x.as_string()
+//#include "KiteTypes.h"
 
 using namespace web;
 
 namespace KiteConnect
 {
+    using DateTime = std::string;
+    using ParamType = std::vector<std::pair<std::string, std::string>>;
     
     class Utils
     {
     public:
-        using CSVObjType = std::list<std::map<std::string, std::string>>;
+
+    using CSVObjType = std::list<std::map<std::string, std::string>>;
 #if 0
         /// <summary>
         /// Convert string to Date object
