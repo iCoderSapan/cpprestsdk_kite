@@ -124,6 +124,21 @@ LibKiteConnect/fast:
 .PHONY : LibKiteConnect/fast
 
 # target to build an object file
+Constants.o:
+	$(MAKE) -f CMakeFiles/LibKiteConnect.dir/build.make CMakeFiles/LibKiteConnect.dir/Constants.o
+.PHONY : Constants.o
+
+# target to preprocess a source file
+Constants.i:
+	$(MAKE) -f CMakeFiles/LibKiteConnect.dir/build.make CMakeFiles/LibKiteConnect.dir/Constants.i
+.PHONY : Constants.i
+
+# target to generate assembly for a file
+Constants.s:
+	$(MAKE) -f CMakeFiles/LibKiteConnect.dir/build.make CMakeFiles/LibKiteConnect.dir/Constants.s
+.PHONY : Constants.s
+
+# target to build an object file
 Kite.o:
 	$(MAKE) -f CMakeFiles/LibKiteConnect.dir/build.make CMakeFiles/LibKiteConnect.dir/Kite.o
 .PHONY : Kite.o
@@ -137,6 +152,21 @@ Kite.i:
 Kite.s:
 	$(MAKE) -f CMakeFiles/LibKiteConnect.dir/build.make CMakeFiles/LibKiteConnect.dir/Kite.s
 .PHONY : Kite.s
+
+# target to build an object file
+KiteTypes.o:
+	$(MAKE) -f CMakeFiles/LibKiteConnect.dir/build.make CMakeFiles/LibKiteConnect.dir/KiteTypes.o
+.PHONY : KiteTypes.o
+
+# target to preprocess a source file
+KiteTypes.i:
+	$(MAKE) -f CMakeFiles/LibKiteConnect.dir/build.make CMakeFiles/LibKiteConnect.dir/KiteTypes.i
+.PHONY : KiteTypes.i
+
+# target to generate assembly for a file
+KiteTypes.s:
+	$(MAKE) -f CMakeFiles/LibKiteConnect.dir/build.make CMakeFiles/LibKiteConnect.dir/KiteTypes.s
+.PHONY : KiteTypes.s
 
 # target to build an object file
 Utils.o:
@@ -162,9 +192,15 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... LibKiteConnect"
+	@echo "... Constants.o"
+	@echo "... Constants.i"
+	@echo "... Constants.s"
 	@echo "... Kite.o"
 	@echo "... Kite.i"
 	@echo "... Kite.s"
+	@echo "... KiteTypes.o"
+	@echo "... KiteTypes.i"
+	@echo "... KiteTypes.s"
 	@echo "... Utils.o"
 	@echo "... Utils.i"
 	@echo "... Utils.s"

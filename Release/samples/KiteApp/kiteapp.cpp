@@ -144,7 +144,7 @@ try {
             json::value obj_data = *itr;
             std::cerr<<"data: "<<obj_data["tradingsymbol"].as_string()<<std::endl;
       }
-      obj.as_number().to_int32()
+      obj.as_number().to_int32();
 } 
 catch (const std::exception &e) { 
         printf("Error exception:%sn", e.what()); 

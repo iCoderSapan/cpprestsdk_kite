@@ -4123,6 +4123,263 @@ build Release/Binaries/KiteApp: CXX_EXECUTABLE_LINKER__KiteApp Release/samples/K
 #############################################
 # Utility command for install/strip
 
+build Release/samples/KiteConnect/CMakeFiles/install/strip.util: CUSTOM_COMMAND Release/samples/KiteConnect/all
+  COMMAND = cd /home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteConnect && /usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+  DESC = Installing the project stripped...
+  pool = console
+  restat = 1
+
+build Release/samples/KiteConnect/install/strip: phony Release/samples/KiteConnect/CMakeFiles/install/strip.util
+
+
+#############################################
+# Utility command for install/local
+
+build Release/samples/KiteConnect/CMakeFiles/install/local.util: CUSTOM_COMMAND Release/samples/KiteConnect/all
+  COMMAND = cd /home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteConnect && /usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+  DESC = Installing only the local directory...
+  pool = console
+  restat = 1
+
+build Release/samples/KiteConnect/install/local: phony Release/samples/KiteConnect/CMakeFiles/install/local.util
+
+
+#############################################
+# Utility command for install
+
+build Release/samples/KiteConnect/CMakeFiles/install.util: CUSTOM_COMMAND Release/samples/KiteConnect/all
+  COMMAND = cd /home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteConnect && /usr/bin/cmake -P cmake_install.cmake
+  DESC = Install the project...
+  pool = console
+  restat = 1
+
+build Release/samples/KiteConnect/install: phony Release/samples/KiteConnect/CMakeFiles/install.util
+
+
+#############################################
+# Utility command for list_install_components
+
+build Release/samples/KiteConnect/list_install_components: phony
+
+
+#############################################
+# Utility command for rebuild_cache
+
+build Release/samples/KiteConnect/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteConnect && /usr/bin/cmake -S/home/sapan/Documents/trade/iCoderSapanGit/msrest -B/home/sapan/Documents/trade/iCoderSapanGit/msrest/build
+  DESC = Running CMake to regenerate build system...
+  pool = console
+  restat = 1
+
+build Release/samples/KiteConnect/rebuild_cache: phony Release/samples/KiteConnect/CMakeFiles/rebuild_cache.util
+
+
+#############################################
+# Utility command for edit_cache
+
+build Release/samples/KiteConnect/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteConnect && /usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  DESC = No interactive CMake dialog available...
+  restat = 1
+
+build Release/samples/KiteConnect/edit_cache: phony Release/samples/KiteConnect/CMakeFiles/edit_cache.util
+
+
+#############################################
+# Utility command for test
+
+build Release/samples/KiteConnect/CMakeFiles/test.util: CUSTOM_COMMAND
+  COMMAND = cd /home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteConnect && /usr/bin/ctest --force-new-ctest-process
+  DESC = Running tests...
+  pool = console
+  restat = 1
+
+build Release/samples/KiteConnect/test: phony Release/samples/KiteConnect/CMakeFiles/test.util
+
+# =============================================================================
+# Object build statements for EXECUTABLE target KiteConnectApp
+
+
+#############################################
+# Order-only phony target for KiteConnectApp
+
+build cmake_object_order_depends_target_KiteConnectApp: phony || cmake_object_order_depends_target_LibKiteConnect
+
+build Release/samples/KiteConnect/CMakeFiles/KiteConnectApp.dir/main.cpp.o: CXX_COMPILER__KiteConnectApp ../Release/samples/KiteConnect/main.cpp || cmake_object_order_depends_target_KiteConnectApp
+  DEP_FILE = Release/samples/KiteConnect/CMakeFiles/KiteConnectApp.dir/main.cpp.o.d
+  FLAGS = -std=c++17 -g
+  OBJECT_DIR = Release/samples/KiteConnect/CMakeFiles/KiteConnectApp.dir
+  OBJECT_FILE_DIR = Release/samples/KiteConnect/CMakeFiles/KiteConnectApp.dir
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target KiteConnectApp
+
+
+#############################################
+# Link the executable Release/Binaries/KiteConnectApp
+
+build Release/Binaries/KiteConnectApp: CXX_EXECUTABLE_LINKER__KiteConnectApp Release/samples/KiteConnect/CMakeFiles/KiteConnectApp.dir/main.cpp.o | Release/Binaries/libLibKiteConnect.so || Release/Binaries/libLibKiteConnect.so
+  FLAGS = -std=c++17 -g
+  LINK_LIBRARIES = -Wl,-rpath,/home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/Binaries  -lpthread  Release/Binaries/libLibKiteConnect.so  -lpthread
+  OBJECT_DIR = Release/samples/KiteConnect/CMakeFiles/KiteConnectApp.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = Release/Binaries/KiteConnectApp
+  TARGET_PDB = KiteConnectApp.dbg
+
+# =============================================================================
+# Write statements declared in CMakeLists.txt:
+# /home/sapan/Documents/trade/iCoderSapanGit/msrest/Release/samples/KiteConnect/CMakeLists.txt
+# =============================================================================
+
+
+#############################################
+# Utility command for install/strip
+
+build Release/samples/KiteConnect/KiteConnect/CMakeFiles/install/strip.util: CUSTOM_COMMAND Release/samples/KiteConnect/KiteConnect/all
+  COMMAND = cd /home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteConnect/KiteConnect && /usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+  DESC = Installing the project stripped...
+  pool = console
+  restat = 1
+
+build Release/samples/KiteConnect/KiteConnect/install/strip: phony Release/samples/KiteConnect/KiteConnect/CMakeFiles/install/strip.util
+
+
+#############################################
+# Utility command for install/local
+
+build Release/samples/KiteConnect/KiteConnect/CMakeFiles/install/local.util: CUSTOM_COMMAND Release/samples/KiteConnect/KiteConnect/all
+  COMMAND = cd /home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteConnect/KiteConnect && /usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+  DESC = Installing only the local directory...
+  pool = console
+  restat = 1
+
+build Release/samples/KiteConnect/KiteConnect/install/local: phony Release/samples/KiteConnect/KiteConnect/CMakeFiles/install/local.util
+
+
+#############################################
+# Utility command for install
+
+build Release/samples/KiteConnect/KiteConnect/CMakeFiles/install.util: CUSTOM_COMMAND Release/samples/KiteConnect/KiteConnect/all
+  COMMAND = cd /home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteConnect/KiteConnect && /usr/bin/cmake -P cmake_install.cmake
+  DESC = Install the project...
+  pool = console
+  restat = 1
+
+build Release/samples/KiteConnect/KiteConnect/install: phony Release/samples/KiteConnect/KiteConnect/CMakeFiles/install.util
+
+
+#############################################
+# Utility command for list_install_components
+
+build Release/samples/KiteConnect/KiteConnect/list_install_components: phony
+
+
+#############################################
+# Utility command for rebuild_cache
+
+build Release/samples/KiteConnect/KiteConnect/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteConnect/KiteConnect && /usr/bin/cmake -S/home/sapan/Documents/trade/iCoderSapanGit/msrest -B/home/sapan/Documents/trade/iCoderSapanGit/msrest/build
+  DESC = Running CMake to regenerate build system...
+  pool = console
+  restat = 1
+
+build Release/samples/KiteConnect/KiteConnect/rebuild_cache: phony Release/samples/KiteConnect/KiteConnect/CMakeFiles/rebuild_cache.util
+
+
+#############################################
+# Utility command for edit_cache
+
+build Release/samples/KiteConnect/KiteConnect/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteConnect/KiteConnect && /usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  DESC = No interactive CMake dialog available...
+  restat = 1
+
+build Release/samples/KiteConnect/KiteConnect/edit_cache: phony Release/samples/KiteConnect/KiteConnect/CMakeFiles/edit_cache.util
+
+
+#############################################
+# Utility command for test
+
+build Release/samples/KiteConnect/KiteConnect/CMakeFiles/test.util: CUSTOM_COMMAND
+  COMMAND = cd /home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteConnect/KiteConnect && /usr/bin/ctest --force-new-ctest-process
+  DESC = Running tests...
+  pool = console
+  restat = 1
+
+build Release/samples/KiteConnect/KiteConnect/test: phony Release/samples/KiteConnect/KiteConnect/CMakeFiles/test.util
+
+# =============================================================================
+# Object build statements for SHARED_LIBRARY target LibKiteConnect
+
+
+#############################################
+# Order-only phony target for LibKiteConnect
+
+build cmake_object_order_depends_target_LibKiteConnect: phony || Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir
+
+build Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir/Kite.cpp.o: CXX_COMPILER__LibKiteConnect ../Release/samples/KiteConnect/KiteConnect/Kite.cpp || cmake_object_order_depends_target_LibKiteConnect
+  DEFINES = -DLibKiteConnect_EXPORTS
+  DEP_FILE = Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir/Kite.cpp.o.d
+  FLAGS = -std=c++17 -g -fPIC
+  INCLUDES = -I../Release/samples/KiteConnect/KiteConnect/.
+  OBJECT_DIR = Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir
+  OBJECT_FILE_DIR = Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir
+
+build Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir/KiteTypes.cpp.o: CXX_COMPILER__LibKiteConnect ../Release/samples/KiteConnect/KiteConnect/KiteTypes.cpp || cmake_object_order_depends_target_LibKiteConnect
+  DEFINES = -DLibKiteConnect_EXPORTS
+  DEP_FILE = Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir/KiteTypes.cpp.o.d
+  FLAGS = -std=c++17 -g -fPIC
+  INCLUDES = -I../Release/samples/KiteConnect/KiteConnect/.
+  OBJECT_DIR = Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir
+  OBJECT_FILE_DIR = Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir
+
+build Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir/Constants.cpp.o: CXX_COMPILER__LibKiteConnect ../Release/samples/KiteConnect/KiteConnect/Constants.cpp || cmake_object_order_depends_target_LibKiteConnect
+  DEFINES = -DLibKiteConnect_EXPORTS
+  DEP_FILE = Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir/Constants.cpp.o.d
+  FLAGS = -std=c++17 -g -fPIC
+  INCLUDES = -I../Release/samples/KiteConnect/KiteConnect/.
+  OBJECT_DIR = Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir
+  OBJECT_FILE_DIR = Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir
+
+build Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir/Utils.cpp.o: CXX_COMPILER__LibKiteConnect ../Release/samples/KiteConnect/KiteConnect/Utils.cpp || cmake_object_order_depends_target_LibKiteConnect
+  DEFINES = -DLibKiteConnect_EXPORTS
+  DEP_FILE = Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir/Utils.cpp.o.d
+  FLAGS = -std=c++17 -g -fPIC
+  INCLUDES = -I../Release/samples/KiteConnect/KiteConnect/.
+  OBJECT_DIR = Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir
+  OBJECT_FILE_DIR = Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir
+
+
+# =============================================================================
+# Link build statements for SHARED_LIBRARY target LibKiteConnect
+
+
+#############################################
+# Link the shared library Release/Binaries/libLibKiteConnect.so
+
+build Release/Binaries/libLibKiteConnect.so: CXX_SHARED_LIBRARY_LINKER__LibKiteConnect Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir/Kite.cpp.o Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir/KiteTypes.cpp.o Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir/Constants.cpp.o Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir/Utils.cpp.o
+  LANGUAGE_COMPILE_FLAGS = -std=c++17 -g
+  LINK_FLAGS = -Wl,--no-undefined
+  LINK_LIBRARIES = -lpthread
+  OBJECT_DIR = Release/samples/KiteConnect/KiteConnect/CMakeFiles/LibKiteConnect.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  SONAME = libLibKiteConnect.so
+  SONAME_FLAG = -Wl,-soname,
+  TARGET_FILE = Release/Binaries/libLibKiteConnect.so
+  TARGET_PDB = LibKiteConnect.so.dbg
+
+# =============================================================================
+# Write statements declared in CMakeLists.txt:
+# /home/sapan/Documents/trade/iCoderSapanGit/msrest/Release/samples/CMakeLists.txt
+# =============================================================================
+
+
+#############################################
+# Utility command for install/strip
+
 build Release/samples/Oauth2Kite/CMakeFiles/install/strip.util: CUSTOM_COMMAND Release/samples/Oauth2Kite/all
   COMMAND = cd /home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/Oauth2Kite && /usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
   DESC = Installing the project stripped...
@@ -4237,6 +4494,10 @@ build BingRequest: phony Release/Binaries/BingRequest
 
 build KiteApp: phony Release/Binaries/KiteApp
 
+build KiteConnectApp: phony Release/Binaries/KiteConnectApp
+
+build LibKiteConnect: phony Release/Binaries/libLibKiteConnect.so
+
 build SearchFile: phony Release/Binaries/SearchFile
 
 build blackjackclient: phony Release/Binaries/blackjackclient
@@ -4254,6 +4515,8 @@ build httplistener_test: phony Release/Binaries/libhttplistener_test.so
 build httptest_utilities: phony Release/Binaries/libhttptest_utilities.so
 
 build json_test: phony Release/Binaries/libjson_test.so
+
+build libLibKiteConnect.so: phony Release/Binaries/libLibKiteConnect.so
 
 build libcommon_utilities.so: phony Release/Binaries/libcommon_utilities.so
 
@@ -4327,7 +4590,7 @@ build Release/all: phony Release/src/all Release/tests/all Release/samples/all
 #############################################
 # Folder: /home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples
 
-build Release/samples/all: phony Release/samples/SearchFile/all Release/samples/BingRequest/all Release/samples/BlackJack/all Release/samples/Oauth1Client/all Release/samples/Oauth2Client/all Release/samples/KiteApp/all Release/samples/Oauth2Kite/all
+build Release/samples/all: phony Release/samples/SearchFile/all Release/samples/BingRequest/all Release/samples/BlackJack/all Release/samples/Oauth1Client/all Release/samples/Oauth2Client/all Release/samples/KiteApp/all Release/samples/KiteConnect/all Release/samples/Oauth2Kite/all
 
 # =============================================================================
 
@@ -4363,6 +4626,20 @@ build Release/samples/BlackJack/BlackJack_Server/all: phony Release/Binaries/bla
 # Folder: /home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteApp
 
 build Release/samples/KiteApp/all: phony Release/Binaries/KiteApp
+
+# =============================================================================
+
+#############################################
+# Folder: /home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteConnect
+
+build Release/samples/KiteConnect/all: phony Release/Binaries/KiteConnectApp Release/samples/KiteConnect/KiteConnect/all
+
+# =============================================================================
+
+#############################################
+# Folder: /home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteConnect/KiteConnect
+
+build Release/samples/KiteConnect/KiteConnect/all: phony Release/Binaries/libLibKiteConnect.so
 
 # =============================================================================
 
@@ -4530,14 +4807,14 @@ default all
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | ../CMakeLists.txt ../Release/CMakeLists.txt ../Release/cmake/cpprest_find_boost.cmake ../Release/cmake/cpprest_find_brotli.cmake ../Release/cmake/cpprest_find_openssl.cmake ../Release/cmake/cpprest_find_websocketpp.cmake ../Release/cmake/cpprest_find_winhttppal.cmake ../Release/cmake/cpprest_find_zlib.cmake ../Release/cmake/cpprestsdk-config-version.in.cmake ../Release/cmake/cpprestsdk-config.in.cmake ../Release/samples/BingRequest/CMakeLists.txt ../Release/samples/BlackJack/BlackJack_Client/CMakeLists.txt ../Release/samples/BlackJack/BlackJack_Server/CMakeLists.txt ../Release/samples/BlackJack/CMakeLists.txt ../Release/samples/CMakeLists.txt ../Release/samples/KiteApp/CMakeLists.txt ../Release/samples/Oauth1Client/CMakeLists.txt ../Release/samples/Oauth2Client/CMakeLists.txt ../Release/samples/Oauth2Kite/CMakeLists.txt ../Release/samples/SearchFile/CMakeLists.txt ../Release/src/CMakeLists.txt ../Release/tests/CMakeLists.txt ../Release/tests/common/CMakeLists.txt ../Release/tests/common/TestRunner/CMakeLists.txt ../Release/tests/common/UnitTestpp/CMakeLists.txt ../Release/tests/common/utilities/CMakeLists.txt ../Release/tests/functional/CMakeLists.txt ../Release/tests/functional/http/CMakeLists.txt ../Release/tests/functional/http/client/CMakeLists.txt ../Release/tests/functional/http/listener/CMakeLists.txt ../Release/tests/functional/http/utilities/CMakeLists.txt ../Release/tests/functional/json/CMakeLists.txt ../Release/tests/functional/pplx/CMakeLists.txt ../Release/tests/functional/pplx/pplx_test/CMakeLists.txt ../Release/tests/functional/streams/CMakeLists.txt ../Release/tests/functional/uri/CMakeLists.txt ../Release/tests/functional/utils/CMakeLists.txt ../Release/tests/functional/websockets/CMakeLists.txt /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfig.cmake /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfigVersion.cmake /usr/lib/x86_64-linux-gnu/cmake/BoostDetectToolset-1.71.0.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_atomic-1.71.0/boost_atomic-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_atomic-1.71.0/boost_atomic-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_atomic-1.71.0/libboost_atomic-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_atomic-1.71.0/libboost_atomic-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_chrono-1.71.0/boost_chrono-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_chrono-1.71.0/boost_chrono-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_chrono-1.71.0/libboost_chrono-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_chrono-1.71.0/libboost_chrono-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_date_time-1.71.0/boost_date_time-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_date_time-1.71.0/boost_date_time-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_date_time-1.71.0/libboost_date_time-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_date_time-1.71.0/libboost_date_time-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/boost_filesystem-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/boost_filesystem-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/libboost_filesystem-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/libboost_filesystem-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.71.0/boost_headers-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.71.0/boost_headers-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_random-1.71.0/boost_random-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_random-1.71.0/boost_random-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_random-1.71.0/libboost_random-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_random-1.71.0/libboost_random-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_regex-1.71.0/boost_regex-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_regex-1.71.0/boost_regex-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_regex-1.71.0/libboost_regex-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_regex-1.71.0/libboost_regex-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/boost_system-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/boost_system-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/libboost_system-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/libboost_system-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.71.0/boost_thread-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.71.0/boost_thread-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.71.0/libboost_thread-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.71.0/libboost_thread-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/websocketpp/websocketpp-config.cmake /usr/lib/x86_64-linux-gnu/cmake/websocketpp/websocketpp-configVersion.cmake /usr/share/cmake-3.16/Modules/CMakeCInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake /usr/share/cmake-3.16/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.16/Modules/CMakeFindDependencyMacro.cmake /usr/share/cmake-3.16/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.16/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.16/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.16/Modules/CheckCSourceCompiles.cmake /usr/share/cmake-3.16/Modules/CheckCXXSourceCompiles.cmake /usr/share/cmake-3.16/Modules/CheckIncludeFile.cmake /usr/share/cmake-3.16/Modules/CheckIncludeFiles.cmake /usr/share/cmake-3.16/Modules/CheckLibraryExists.cmake /usr/share/cmake-3.16/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU-C.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU.cmake /usr/share/cmake-3.16/Modules/FindBoost.cmake /usr/share/cmake-3.16/Modules/FindPackageHandleStandardArgs.cmake /usr/share/cmake-3.16/Modules/FindPackageMessage.cmake /usr/share/cmake-3.16/Modules/FindPkgConfig.cmake /usr/share/cmake-3.16/Modules/FindThreads.cmake /usr/share/cmake-3.16/Modules/FindZLIB.cmake /usr/share/cmake-3.16/Modules/GNUInstallDirs.cmake /usr/share/cmake-3.16/Modules/Internal/CMakeCheckCompilerFlag.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU.cmake /usr/share/cmake-3.16/Modules/Platform/Linux.cmake /usr/share/cmake-3.16/Modules/Platform/UnixPaths.cmake /usr/share/cmake-3.16/Modules/SelectLibraryConfigurations.cmake CMakeCache.txt CMakeFiles/3.16.3/CMakeCCompiler.cmake CMakeFiles/3.16.3/CMakeCXXCompiler.cmake CMakeFiles/3.16.3/CMakeSystem.cmake
+build build.ninja: RERUN_CMAKE | ../CMakeLists.txt ../Release/CMakeLists.txt ../Release/cmake/cpprest_find_boost.cmake ../Release/cmake/cpprest_find_brotli.cmake ../Release/cmake/cpprest_find_openssl.cmake ../Release/cmake/cpprest_find_websocketpp.cmake ../Release/cmake/cpprest_find_winhttppal.cmake ../Release/cmake/cpprest_find_zlib.cmake ../Release/cmake/cpprestsdk-config-version.in.cmake ../Release/cmake/cpprestsdk-config.in.cmake ../Release/samples/BingRequest/CMakeLists.txt ../Release/samples/BlackJack/BlackJack_Client/CMakeLists.txt ../Release/samples/BlackJack/BlackJack_Server/CMakeLists.txt ../Release/samples/BlackJack/CMakeLists.txt ../Release/samples/CMakeLists.txt ../Release/samples/KiteApp/CMakeLists.txt ../Release/samples/KiteConnect/CMakeLists.txt ../Release/samples/KiteConnect/KiteConnect/CMakeLists.txt ../Release/samples/Oauth1Client/CMakeLists.txt ../Release/samples/Oauth2Client/CMakeLists.txt ../Release/samples/Oauth2Kite/CMakeLists.txt ../Release/samples/SearchFile/CMakeLists.txt ../Release/src/CMakeLists.txt ../Release/tests/CMakeLists.txt ../Release/tests/common/CMakeLists.txt ../Release/tests/common/TestRunner/CMakeLists.txt ../Release/tests/common/UnitTestpp/CMakeLists.txt ../Release/tests/common/utilities/CMakeLists.txt ../Release/tests/functional/CMakeLists.txt ../Release/tests/functional/http/CMakeLists.txt ../Release/tests/functional/http/client/CMakeLists.txt ../Release/tests/functional/http/listener/CMakeLists.txt ../Release/tests/functional/http/utilities/CMakeLists.txt ../Release/tests/functional/json/CMakeLists.txt ../Release/tests/functional/pplx/CMakeLists.txt ../Release/tests/functional/pplx/pplx_test/CMakeLists.txt ../Release/tests/functional/streams/CMakeLists.txt ../Release/tests/functional/uri/CMakeLists.txt ../Release/tests/functional/utils/CMakeLists.txt ../Release/tests/functional/websockets/CMakeLists.txt /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfig.cmake /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfigVersion.cmake /usr/lib/x86_64-linux-gnu/cmake/BoostDetectToolset-1.71.0.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_atomic-1.71.0/boost_atomic-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_atomic-1.71.0/boost_atomic-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_atomic-1.71.0/libboost_atomic-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_atomic-1.71.0/libboost_atomic-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_chrono-1.71.0/boost_chrono-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_chrono-1.71.0/boost_chrono-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_chrono-1.71.0/libboost_chrono-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_chrono-1.71.0/libboost_chrono-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_date_time-1.71.0/boost_date_time-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_date_time-1.71.0/boost_date_time-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_date_time-1.71.0/libboost_date_time-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_date_time-1.71.0/libboost_date_time-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/boost_filesystem-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/boost_filesystem-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/libboost_filesystem-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/libboost_filesystem-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.71.0/boost_headers-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.71.0/boost_headers-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_random-1.71.0/boost_random-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_random-1.71.0/boost_random-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_random-1.71.0/libboost_random-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_random-1.71.0/libboost_random-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_regex-1.71.0/boost_regex-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_regex-1.71.0/boost_regex-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_regex-1.71.0/libboost_regex-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_regex-1.71.0/libboost_regex-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/boost_system-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/boost_system-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/libboost_system-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/libboost_system-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.71.0/boost_thread-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.71.0/boost_thread-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.71.0/libboost_thread-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.71.0/libboost_thread-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/websocketpp/websocketpp-config.cmake /usr/lib/x86_64-linux-gnu/cmake/websocketpp/websocketpp-configVersion.cmake /usr/share/cmake-3.16/Modules/CMakeCInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake /usr/share/cmake-3.16/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.16/Modules/CMakeFindDependencyMacro.cmake /usr/share/cmake-3.16/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.16/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.16/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.16/Modules/CheckCSourceCompiles.cmake /usr/share/cmake-3.16/Modules/CheckCXXSourceCompiles.cmake /usr/share/cmake-3.16/Modules/CheckIncludeFile.cmake /usr/share/cmake-3.16/Modules/CheckIncludeFiles.cmake /usr/share/cmake-3.16/Modules/CheckLibraryExists.cmake /usr/share/cmake-3.16/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU-C.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU.cmake /usr/share/cmake-3.16/Modules/FindBoost.cmake /usr/share/cmake-3.16/Modules/FindPackageHandleStandardArgs.cmake /usr/share/cmake-3.16/Modules/FindPackageMessage.cmake /usr/share/cmake-3.16/Modules/FindPkgConfig.cmake /usr/share/cmake-3.16/Modules/FindThreads.cmake /usr/share/cmake-3.16/Modules/FindZLIB.cmake /usr/share/cmake-3.16/Modules/GNUInstallDirs.cmake /usr/share/cmake-3.16/Modules/Internal/CMakeCheckCompilerFlag.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU.cmake /usr/share/cmake-3.16/Modules/Platform/Linux.cmake /usr/share/cmake-3.16/Modules/Platform/UnixPaths.cmake /usr/share/cmake-3.16/Modules/SelectLibraryConfigurations.cmake CMakeCache.txt CMakeFiles/3.16.3/CMakeCCompiler.cmake CMakeFiles/3.16.3/CMakeCXXCompiler.cmake CMakeFiles/3.16.3/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build ../CMakeLists.txt ../Release/CMakeLists.txt ../Release/cmake/cpprest_find_boost.cmake ../Release/cmake/cpprest_find_brotli.cmake ../Release/cmake/cpprest_find_openssl.cmake ../Release/cmake/cpprest_find_websocketpp.cmake ../Release/cmake/cpprest_find_winhttppal.cmake ../Release/cmake/cpprest_find_zlib.cmake ../Release/cmake/cpprestsdk-config-version.in.cmake ../Release/cmake/cpprestsdk-config.in.cmake ../Release/samples/BingRequest/CMakeLists.txt ../Release/samples/BlackJack/BlackJack_Client/CMakeLists.txt ../Release/samples/BlackJack/BlackJack_Server/CMakeLists.txt ../Release/samples/BlackJack/CMakeLists.txt ../Release/samples/CMakeLists.txt ../Release/samples/KiteApp/CMakeLists.txt ../Release/samples/Oauth1Client/CMakeLists.txt ../Release/samples/Oauth2Client/CMakeLists.txt ../Release/samples/Oauth2Kite/CMakeLists.txt ../Release/samples/SearchFile/CMakeLists.txt ../Release/src/CMakeLists.txt ../Release/tests/CMakeLists.txt ../Release/tests/common/CMakeLists.txt ../Release/tests/common/TestRunner/CMakeLists.txt ../Release/tests/common/UnitTestpp/CMakeLists.txt ../Release/tests/common/utilities/CMakeLists.txt ../Release/tests/functional/CMakeLists.txt ../Release/tests/functional/http/CMakeLists.txt ../Release/tests/functional/http/client/CMakeLists.txt ../Release/tests/functional/http/listener/CMakeLists.txt ../Release/tests/functional/http/utilities/CMakeLists.txt ../Release/tests/functional/json/CMakeLists.txt ../Release/tests/functional/pplx/CMakeLists.txt ../Release/tests/functional/pplx/pplx_test/CMakeLists.txt ../Release/tests/functional/streams/CMakeLists.txt ../Release/tests/functional/uri/CMakeLists.txt ../Release/tests/functional/utils/CMakeLists.txt ../Release/tests/functional/websockets/CMakeLists.txt /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfig.cmake /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfigVersion.cmake /usr/lib/x86_64-linux-gnu/cmake/BoostDetectToolset-1.71.0.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_atomic-1.71.0/boost_atomic-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_atomic-1.71.0/boost_atomic-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_atomic-1.71.0/libboost_atomic-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_atomic-1.71.0/libboost_atomic-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_chrono-1.71.0/boost_chrono-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_chrono-1.71.0/boost_chrono-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_chrono-1.71.0/libboost_chrono-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_chrono-1.71.0/libboost_chrono-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_date_time-1.71.0/boost_date_time-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_date_time-1.71.0/boost_date_time-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_date_time-1.71.0/libboost_date_time-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_date_time-1.71.0/libboost_date_time-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/boost_filesystem-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/boost_filesystem-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/libboost_filesystem-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/libboost_filesystem-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.71.0/boost_headers-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.71.0/boost_headers-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_random-1.71.0/boost_random-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_random-1.71.0/boost_random-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_random-1.71.0/libboost_random-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_random-1.71.0/libboost_random-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_regex-1.71.0/boost_regex-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_regex-1.71.0/boost_regex-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_regex-1.71.0/libboost_regex-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_regex-1.71.0/libboost_regex-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/boost_system-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/boost_system-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/libboost_system-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/libboost_system-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.71.0/boost_thread-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.71.0/boost_thread-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.71.0/libboost_thread-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.71.0/libboost_thread-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/websocketpp/websocketpp-config.cmake /usr/lib/x86_64-linux-gnu/cmake/websocketpp/websocketpp-configVersion.cmake /usr/share/cmake-3.16/Modules/CMakeCInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake /usr/share/cmake-3.16/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.16/Modules/CMakeFindDependencyMacro.cmake /usr/share/cmake-3.16/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.16/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.16/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.16/Modules/CheckCSourceCompiles.cmake /usr/share/cmake-3.16/Modules/CheckCXXSourceCompiles.cmake /usr/share/cmake-3.16/Modules/CheckIncludeFile.cmake /usr/share/cmake-3.16/Modules/CheckIncludeFiles.cmake /usr/share/cmake-3.16/Modules/CheckLibraryExists.cmake /usr/share/cmake-3.16/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU-C.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU.cmake /usr/share/cmake-3.16/Modules/FindBoost.cmake /usr/share/cmake-3.16/Modules/FindPackageHandleStandardArgs.cmake /usr/share/cmake-3.16/Modules/FindPackageMessage.cmake /usr/share/cmake-3.16/Modules/FindPkgConfig.cmake /usr/share/cmake-3.16/Modules/FindThreads.cmake /usr/share/cmake-3.16/Modules/FindZLIB.cmake /usr/share/cmake-3.16/Modules/GNUInstallDirs.cmake /usr/share/cmake-3.16/Modules/Internal/CMakeCheckCompilerFlag.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU.cmake /usr/share/cmake-3.16/Modules/Platform/Linux.cmake /usr/share/cmake-3.16/Modules/Platform/UnixPaths.cmake /usr/share/cmake-3.16/Modules/SelectLibraryConfigurations.cmake CMakeCache.txt CMakeFiles/3.16.3/CMakeCCompiler.cmake CMakeFiles/3.16.3/CMakeCXXCompiler.cmake CMakeFiles/3.16.3/CMakeSystem.cmake: phony
+build ../CMakeLists.txt ../Release/CMakeLists.txt ../Release/cmake/cpprest_find_boost.cmake ../Release/cmake/cpprest_find_brotli.cmake ../Release/cmake/cpprest_find_openssl.cmake ../Release/cmake/cpprest_find_websocketpp.cmake ../Release/cmake/cpprest_find_winhttppal.cmake ../Release/cmake/cpprest_find_zlib.cmake ../Release/cmake/cpprestsdk-config-version.in.cmake ../Release/cmake/cpprestsdk-config.in.cmake ../Release/samples/BingRequest/CMakeLists.txt ../Release/samples/BlackJack/BlackJack_Client/CMakeLists.txt ../Release/samples/BlackJack/BlackJack_Server/CMakeLists.txt ../Release/samples/BlackJack/CMakeLists.txt ../Release/samples/CMakeLists.txt ../Release/samples/KiteApp/CMakeLists.txt ../Release/samples/KiteConnect/CMakeLists.txt ../Release/samples/KiteConnect/KiteConnect/CMakeLists.txt ../Release/samples/Oauth1Client/CMakeLists.txt ../Release/samples/Oauth2Client/CMakeLists.txt ../Release/samples/Oauth2Kite/CMakeLists.txt ../Release/samples/SearchFile/CMakeLists.txt ../Release/src/CMakeLists.txt ../Release/tests/CMakeLists.txt ../Release/tests/common/CMakeLists.txt ../Release/tests/common/TestRunner/CMakeLists.txt ../Release/tests/common/UnitTestpp/CMakeLists.txt ../Release/tests/common/utilities/CMakeLists.txt ../Release/tests/functional/CMakeLists.txt ../Release/tests/functional/http/CMakeLists.txt ../Release/tests/functional/http/client/CMakeLists.txt ../Release/tests/functional/http/listener/CMakeLists.txt ../Release/tests/functional/http/utilities/CMakeLists.txt ../Release/tests/functional/json/CMakeLists.txt ../Release/tests/functional/pplx/CMakeLists.txt ../Release/tests/functional/pplx/pplx_test/CMakeLists.txt ../Release/tests/functional/streams/CMakeLists.txt ../Release/tests/functional/uri/CMakeLists.txt ../Release/tests/functional/utils/CMakeLists.txt ../Release/tests/functional/websockets/CMakeLists.txt /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfig.cmake /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfigVersion.cmake /usr/lib/x86_64-linux-gnu/cmake/BoostDetectToolset-1.71.0.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_atomic-1.71.0/boost_atomic-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_atomic-1.71.0/boost_atomic-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_atomic-1.71.0/libboost_atomic-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_atomic-1.71.0/libboost_atomic-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_chrono-1.71.0/boost_chrono-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_chrono-1.71.0/boost_chrono-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_chrono-1.71.0/libboost_chrono-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_chrono-1.71.0/libboost_chrono-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_date_time-1.71.0/boost_date_time-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_date_time-1.71.0/boost_date_time-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_date_time-1.71.0/libboost_date_time-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_date_time-1.71.0/libboost_date_time-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/boost_filesystem-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/boost_filesystem-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/libboost_filesystem-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/libboost_filesystem-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.71.0/boost_headers-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.71.0/boost_headers-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_random-1.71.0/boost_random-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_random-1.71.0/boost_random-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_random-1.71.0/libboost_random-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_random-1.71.0/libboost_random-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_regex-1.71.0/boost_regex-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_regex-1.71.0/boost_regex-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_regex-1.71.0/libboost_regex-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_regex-1.71.0/libboost_regex-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/boost_system-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/boost_system-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/libboost_system-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/libboost_system-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.71.0/boost_thread-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.71.0/boost_thread-config.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.71.0/libboost_thread-variant-shared.cmake /usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.71.0/libboost_thread-variant-static.cmake /usr/lib/x86_64-linux-gnu/cmake/websocketpp/websocketpp-config.cmake /usr/lib/x86_64-linux-gnu/cmake/websocketpp/websocketpp-configVersion.cmake /usr/share/cmake-3.16/Modules/CMakeCInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake /usr/share/cmake-3.16/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.16/Modules/CMakeFindDependencyMacro.cmake /usr/share/cmake-3.16/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.16/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.16/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.16/Modules/CheckCSourceCompiles.cmake /usr/share/cmake-3.16/Modules/CheckCXXSourceCompiles.cmake /usr/share/cmake-3.16/Modules/CheckIncludeFile.cmake /usr/share/cmake-3.16/Modules/CheckIncludeFiles.cmake /usr/share/cmake-3.16/Modules/CheckLibraryExists.cmake /usr/share/cmake-3.16/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU-C.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU.cmake /usr/share/cmake-3.16/Modules/FindBoost.cmake /usr/share/cmake-3.16/Modules/FindPackageHandleStandardArgs.cmake /usr/share/cmake-3.16/Modules/FindPackageMessage.cmake /usr/share/cmake-3.16/Modules/FindPkgConfig.cmake /usr/share/cmake-3.16/Modules/FindThreads.cmake /usr/share/cmake-3.16/Modules/FindZLIB.cmake /usr/share/cmake-3.16/Modules/GNUInstallDirs.cmake /usr/share/cmake-3.16/Modules/Internal/CMakeCheckCompilerFlag.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU.cmake /usr/share/cmake-3.16/Modules/Platform/Linux.cmake /usr/share/cmake-3.16/Modules/Platform/UnixPaths.cmake /usr/share/cmake-3.16/Modules/SelectLibraryConfigurations.cmake CMakeCache.txt CMakeFiles/3.16.3/CMakeCCompiler.cmake CMakeFiles/3.16.3/CMakeCXXCompiler.cmake CMakeFiles/3.16.3/CMakeSystem.cmake: phony
 
 
 #############################################

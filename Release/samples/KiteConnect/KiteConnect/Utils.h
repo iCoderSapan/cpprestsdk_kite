@@ -1,4 +1,5 @@
-﻿/*using System;
+﻿#pragma once
+/*using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -161,7 +162,7 @@ namespace KiteConnect
         /// <param name="Params">Dictionary to add the key-value pair</param>
         /// <param name="Key">Key of the parameter</param>
         /// <param name="Value">Value of the parameter</param>
-        static inline void AddIfNotNull(ParamType &params, std::string Key, std::string &value);
+        static void AddIfNotNull(ParamType &params, std::string Key, std::string value);
 
         /// <summary>
         /// Generates SHA256 checksum for login.

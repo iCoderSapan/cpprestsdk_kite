@@ -45,6 +45,7 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("/home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/Oauth1Client/cmake_install.cmake")
   include("/home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/Oauth2Client/cmake_install.cmake")
   include("/home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteApp/cmake_install.cmake")
+  include("/home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteConnect/cmake_install.cmake")
   include("/home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/Oauth2Kite/cmake_install.cmake")
 
 endif()

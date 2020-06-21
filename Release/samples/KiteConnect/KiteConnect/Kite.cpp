@@ -16,11 +16,10 @@ using System.Reflection;
 #include "cpprest/json.h" 
 #include "cpprest/http_listener.h" 
 #include "cpprest/uri.h" 
-#include "cpprest/asyncrt_utils.h"
+//#include "cpprest/asyncrt_utils.h"
 #include <boost/algorithm/string.hpp>
 
-#include "KiteTypes.h"
-#include "Utils.h"
+#include "Kite.h"
 
 #include <iomanip>
 #include <sstream>
@@ -48,105 +47,21 @@ namespace KiteConnect
     /// <summary>
     /// The API client class. In production, you may initialize a single instance of this class per `APIKey`.
     /// </summary>
-    class Kite
-    {
-        // Default root API endpoint. It's possible to
-        // override this by passing the `Root` parameter during initialisation.
-        private:  
-            std::string _root = "https://api.kite.trade";
-            std::string _login = "https://kite.trade/connect/login";
-            std::string USER_AGENT = "SapanClient";
-
-            std::string _apiKey;
-            std::string _accessToken;
-            bool _enableLogging;
-            web::web_proxy _proxy;
-            std::chrono::seconds _timeout;
-            shared_ptr<http_client> httpClient;
-            std::function<void(void)> _sessionHook;
-
-            //private Cache cache = new Cache();
-
-            const std::map<std::string, std::string> _routes = 
-            {
-                {"parameters", "/parameters"},
-                {"api.token", "/session/token"},
-                {"api.refresh", "/session/refresh_token"},
-
-                {"instrument.margins", "/margins/{segment}"},
-
-                {"user.profile", "/user/profile"},
-                {"user.margins", "/user/margins"},
-                {"user.segment_margins", "/user/margins/{segment}"},
-
-                {"orders", "/orders"},
-                {"trades", "/trades"},
-                {"orders.history", "/orders/{order_id}"},
-
-                {"orders.place", "/orders/{variety}"},
-                {"orders.modify", "/orders/{variety}/{order_id}"},
-                {"orders.cancel", "/orders/{variety}/{order_id}"},
-                {"orders.trades", "/orders/{order_id}/trades"},
-
-                {"gtt", "/gtt/triggers"},
-                {"gtt.place", "/gtt/triggers"},
-                {"gtt.info", "/gtt/triggers/{id}"},
-                {"gtt.modify", "/gtt/triggers/{id}"},
-                {"gtt.delete", "/gtt/triggers/{id}"},
-
-                {"portfolio.positions", "/portfolio/positions"},
-                {"portfolio.holdings", "/portfolio/holdings"},
-                {"portfolio.positions.modify", "/portfolio/positions"},
-
-                {"market.instruments.all", "/instruments"},
-                {"market.instruments", "/instruments/{exchange}"},
-                {"market.quote", "/quote"},
-                {"market.ohlc", "/quote/ohlc"},
-                {"market.ltp", "/quote/ltp"},
-                {"market.historical", "/instruments/historical/{instrument_token}/{interval}"},
-                {"market.trigger_range", "/instruments/trigger_range/{transaction_type}"},
-
-                {"mutualfunds.orders", "/mf/orders"},
-                {"mutualfunds.order", "/mf/orders/{order_id}"},
-                {"mutualfunds.orders.place", "/mf/orders"},
-                {"mutualfunds.cancel_order", "/mf/orders/{order_id}"},
-
-                {"mutualfunds.sips", "/mf/sips"},
-                {"mutualfunds.sips.place", "/mf/sips"},
-                {"mutualfunds.cancel_sips", "/mf/sips/{sip_id}"},
-                {"mutualfunds.sips.modify", "/mf/sips/{sip_id}"},
-                {"mutualfunds.sip", "/mf/sips/{sip_id}"},
-
-                {"mutualfunds.instruments", "/mf/instruments"},
-                {"mutualfunds.holdings", "/mf/holdings"}
-            };
-        public:
-        /// <summary>
-        /// Initialize a new Kite Connect client instance.
-        /// </summary>
-        /// <param name="APIKey">API Key issued to you</param>
-        /// <param name="AccessToken">The token obtained after the login flow in exchange for the `RequestToken` . 
-        /// Pre-login, this will default to None,but once you have obtained it, you should persist it in a database or session to pass 
-        /// to the Kite Connect class initialisation for subsequent requests.</param>
-        /// <param name="Root">API end point root. Unless you explicitly want to send API requests to a non-default endpoint, this can be ignored.</param>
-        /// <param name="Debug">If set to True, will serialise and print requests and responses to stdout.</param>
-        /// <param name="Timeout">Time in seconds for which  the API client will wait for a request to complete before it fails</param>
-        /// <param name="Proxy">To set proxy for http request. Should be an object of WebProxy.</param>
-        /// <param name="Pool">Number of connections to server. Client will reuse the connections if they are alive.</param>
-        Kite(std::string APIKey, web::web_proxy proxy, std::string accessToken = "", std::string root = "", bool debug = false, int timeout = 7, int Pool = 2)
+        Kite::Kite(std::string APIKey, web::web_proxy proxy, std::string accessToken, std::string root, bool debug, int timeout, int Pool)
         {
             _accessToken = accessToken;
             _apiKey = APIKey;
             if (!root.empty())
                 _root = root;
+
             _enableLogging = debug;
 
-            //_timeout = Timeout;
             _proxy = proxy;
 
+            //_timeout = Timeout;
             _timeout = std::chrono::seconds(timeout);
             http_client_config clientConfig;
-            clientConfig.set_timeout(timeout);
+            clientConfig.set_timeout(_timeout);
             // if(proxy != "") {
             //     clientConfig.set_proxy(*proxy);
             // }
@@ -158,7 +73,7 @@ namespace KiteConnect
         /// Enabling logging prints HTTP request and response summaries to console
         /// </summary>
         /// <param name="enableLogging">Set to true to enable logging</param>
-        void EnableLogging(bool enableLogging)
+        void Kite::EnableLogging(bool enableLogging)
         {
             _enableLogging = enableLogging;
         }
@@ -175,7 +90,7 @@ namespace KiteConnect
 		/// clear session cookies, or initiate a fresh login.
         /// </summary>
         /// <param name="Method">Action to be invoked when session becomes invalid.</param>
-        void SetSessionExpiryHook(std::function<void(void)> method)
+        void Kite::SetSessionExpiryHook(std::function<void(void)> method)
         {
             _sessionHook = method;
         }
@@ -184,7 +99,7 @@ namespace KiteConnect
         /// Set the `AccessToken` received after a successful authentication.
         /// </summary>
         /// <param name="AccessToken">Access token for the session.</param>
-        void SetAccessToken(std::string accessToken)
+        void Kite::SetAccessToken(std::string accessToken)
         {
             _accessToken = accessToken;
         }
@@ -193,7 +108,7 @@ namespace KiteConnect
         /// Get the remote login url to which a user should be redirected to initiate the login flow.
         /// </summary>
         /// <returns>Login url to authenticate the user.</returns>
-        std::string GetLoginURL()
+        std::string Kite::GetLoginURL()
         {
             std::stringstream url;
             url<<_login<<"?api_key="<<_apiKey<<"&v=3";
@@ -209,7 +124,7 @@ namespace KiteConnect
         /// <param name="RequestToken">Token obtained from the GET paramers after a successful login redirect.</param>
         /// <param name="AppSecret">API secret issued with the API key.</param>
         /// <returns>User structure with tokens and profile data</returns>
-        User GenerateSession(std::string RequestToken, std::string AppSecret)
+        User Kite::GenerateSession(std::string RequestToken, std::string AppSecret)
         {
             std::string checksum = Utils::SHA256(_apiKey + RequestToken + AppSecret);
 
@@ -228,7 +143,7 @@ namespace KiteConnect
         /// </summary>
         /// <param name="AccessToken">Access token to invalidate. Default is the active access token.</param>
         /// <returns>Json response in the form of nested std::string dictionary.</returns>
-        std::string InvalidateAccessToken(std::string AccessToken = "")
+        std::string Kite::InvalidateAccessToken(std::string AccessToken)
         {
             ParamType param;
             //map<std::string, std::string> param;
@@ -244,7 +159,7 @@ namespace KiteConnect
         /// </summary>
         /// <param name="RefreshToken">RefreshToken to invalidate</param>
         /// <returns>Json response in the form of nested std::string dictionary.</returns>
-        std::string InvalidateRefreshToken(std::string RefreshToken)
+        std::string Kite::InvalidateRefreshToken(std::string RefreshToken)
         {
             ParamType param;
 
@@ -259,7 +174,7 @@ namespace KiteConnect
         /// <param name="RefreshToken">RefreshToken to renew the AccessToken.</param>
         /// <param name="AppSecret">API secret issued with the API key.</param>
         /// <returns>TokenRenewResponse that contains new AccessToken and RefreshToken.</returns>
-        TokenSet RenewAccessToken(std::string RefreshToken, std::string AppSecret)
+        TokenSet Kite::RenewAccessToken(std::string RefreshToken, std::string AppSecret)
         {
             ParamType param;
 
@@ -276,7 +191,7 @@ namespace KiteConnect
         /// Gets currently logged in user details
         /// </summary>
         /// <returns>User profile</returns>
-        Profile GetProfile()
+        Profile Kite::GetProfile()
         {
             std::string profileData = Get("user.profile");
 
@@ -303,7 +218,7 @@ namespace KiteConnect
         /// Get account balance and cash margin details for all segments.
         /// </summary>
         /// <returns>User margin response with both equity and commodity margins.</returns>
-        UserMarginsResponse GetMargins()
+        UserMarginsResponse Kite::GetMargins()
         {
             std::string marginsData = Get("user.margins");
             return UserMarginsResponse(marginsData);
@@ -314,7 +229,7 @@ namespace KiteConnect
         /// </summary>
         /// <param name="Segment">Trading segment (eg: equity or commodity)</param>
         /// <returns>Margins for specified segment.</returns>
-        UserMargin GetMargins(std::string Segment)
+        UserMargin Kite::GetMargins(std::string Segment)
         {
             ParamType params {
                 {"segment", Segment}
@@ -342,22 +257,22 @@ namespace KiteConnect
         /// <param name="Variety">You can place orders of varieties; regular orders, after market orders, cover orders etc. </param>
         /// <param name="Tag">An optional tag to apply to an order to identify it (alphanumeric, max 8 chars)</param>
         /// <returns>Json response in the form of nested std::string dictionary.</returns>
-        OrderResponse PlaceOrder(
+        OrderResponse Kite::PlaceOrder(
             std::string exchange,
             std::string tradingSymbol,
             std::string transactionType,
-            int quantity,
-            double price = 0.0,
-            std::string product = "",
-            std::string orderType = "",
-            std::string validity = "",
-            int disclosedQuantity = 0,
-            double triggerPrice = 0.0,
-            double squareOffValue = 0.0,
-            double stoplossValue = 0.0,
-            double trailingStoploss = 0.0,
-            std::string variety = Constants::VARIETY_REGULAR,
-            std::string tag = "")
+            int &quantity,
+            double price,
+            std::string product,
+            std::string orderType,
+            std::string validity,
+            int disclosedQuantity,
+            double triggerPrice,
+            double squareOffValue,
+            double stoplossValue,
+            double trailingStoploss,
+            std::string variety,
+            std::string tag)
         {
             ParamType params;
 
@@ -398,20 +313,20 @@ namespace KiteConnect
         /// <param name="TriggerPrice">For SL, SL-M etc.</param>
         /// <param name="Variety">You can place orders of varieties; regular orders, after market orders, cover orders etc. </param>
         /// <returns>Json response in the form of nested std::string dictionary.</returns>
-        OrderResponse ModifyOrder(
+        OrderResponse Kite::ModifyOrder(
             std::string orderId,
-            std::string parentOrderId = "",
-            std::string exchange = "",
-            std::string tradingSymbol = "",
-            std::string transactionType = "",
-            std::string quantity = "",
-            double price = 0.0,
-            std::string product = "",
-            std::string orderType = "",
-            std::string validity = Constants::VALIDITY_DAY,
-            int disclosedQuantity = 0,
-            double triggerPrice = 0.0,
-            std::string variety = Constants::VARIETY_REGULAR)
+            std::string parentOrderId,
+            std::string exchange,
+            std::string tradingSymbol,
+            std::string transactionType,
+            std::string quantity,
+            double price,
+            std::string product,
+            std::string orderType,
+            std::string validity,
+            int disclosedQuantity,
+            double triggerPrice,
+            std::string variety)
         {
             ParamType params;
 
@@ -456,9 +371,9 @@ namespace KiteConnect
         /// <param name="Variety">You can place orders of varieties; regular orders, after market orders, cover orders etc. </param>
         /// <param name="ParentOrderId">Id of the parent order (obtained from the /orders call) as BO is a multi-legged order</param>
         /// <returns>Json response in the form of nested std::string dictionary.</returns>
-        OrderResponse CancelOrder(std::string orderId,
-                                  std::string variety = Constants::VARIETY_REGULAR,
-                                  std::string parentOrderId = "")
+        OrderResponse Kite::CancelOrder(std::string orderId,
+                                  std::string variety,
+                                  std::string parentOrderId)
         {
             ParamType params;
 
@@ -473,7 +388,7 @@ namespace KiteConnect
         /// Gets the collection of orders from the orderbook.
         /// </summary>
         /// <returns>GetOrdersResponse which contains List of orders.</returns>
-        GetOrdersResponse GetOrders()
+        GetOrdersResponse Kite::GetOrders()
         {
             return GetOrdersResponse(Get("orders"));
         }
@@ -483,7 +398,7 @@ namespace KiteConnect
         /// </summary>
         /// <param name="OrderId">Unique order id</param>
         /// <returns>List of order objects.</returns>
-        OrderHistoryResponse GetOrderHistory(std::string OrderId)
+        OrderHistoryResponse Kite::GetOrderHistory(std::string OrderId)
         {
             ParamType param {
                 {"order_id", OrderId},
@@ -499,7 +414,7 @@ namespace KiteConnect
         /// </summary>
         /// <param name="OrderId">is the ID of the order (optional) whose trades are to be retrieved. If no `OrderId` is specified, all trades for the day are returned.</param>
         /// <returns>List of trades of given order.</returns>
-        OrderTradesResponse GetOrderTrades(std::string orderId = "")
+        OrderTradesResponse Kite::GetOrderTrades(std::string orderId)
         {
             if (!orderId.empty())
             {
@@ -517,7 +432,7 @@ namespace KiteConnect
         /// Retrieve the list of positions.
         /// </summary>
         /// <returns>Day and net positions.</returns>
-        PositionResponse GetPositions()
+        PositionResponse Kite::GetPositions()
         {
             std::string positionsdata = Get("portfolio.positions");
             return PositionResponse(positionsdata);
@@ -527,7 +442,7 @@ namespace KiteConnect
         /// Retrieve the list of equity holdings.
         /// </summary>
         /// <returns>List of holdings.</returns>
-        HoldingsResponse GetHoldings()
+        HoldingsResponse Kite::GetHoldings()
         {
             std::string holdingsData = Get("portfolio.holdings");
             return HoldingsResponse(holdingsData);
@@ -544,7 +459,7 @@ namespace KiteConnect
         /// <param name="OldProduct">Existing margin product of the position</param>
         /// <param name="NewProduct">Margin product to convert to</param>
         /// <returns>Json response in the form of nested std::string dictionary.</returns>
-        ConvertPositionResponse ConvertPosition(
+        ConvertPositionResponse Kite::ConvertPosition(
             std::string exchange,
             std::string tradingSymbol,
             std::string transactionType,
@@ -573,7 +488,7 @@ namespace KiteConnect
         /// </summary>
         /// <param name="Exchange">Name of the exchange</param>
         /// <returns>List of instruments.</returns>
-        GetInstrumentsResponse GetInstruments(std::string exchange = "")
+        GetInstrumentsResponse Kite::GetInstruments(std::string exchange)
         {
             ParamType param;
             std::string instrumentsData;
@@ -593,7 +508,7 @@ namespace KiteConnect
         /// </summary>
         /// <param name="InstrumentId">Indentification of instrument in the form of EXCHANGE:TRADINGSYMBOL (eg: NSE:INFY) or InstrumentToken (eg: 408065)</param>
         /// <returns>Dictionary of all Quote objects with keys as in InstrumentId</returns>
-        QuoteResponse GetQuote(vector<std::string> instrumentIds)
+        QuoteResponse Kite::GetQuote(vector<std::string> instrumentIds)
         {
             ParamType param;
             for (int idx = 0; idx < instrumentIds.size(); idx++)
@@ -611,7 +526,7 @@ namespace KiteConnect
         /// </summary>
         /// <param name="InstrumentId">Indentification of instrument in the form of EXCHANGE:TRADINGSYMBOL (eg: NSE:INFY) or InstrumentToken (eg: 408065)</param>
         /// <returns>Dictionary of all OHLC objects with keys as in InstrumentId</returns>
-        OHLCResponse GetOHLC(vector<std::string> instrumentIds)
+        OHLCResponse Kite::GetOHLC(vector<std::string> instrumentIds)
         {
             ParamType param;
             for (int idx = 0; idx < instrumentIds.size(); idx++)
@@ -628,7 +543,7 @@ namespace KiteConnect
         /// </summary>
         /// <param name="InstrumentId">Indentification of instrument in the form of EXCHANGE:TRADINGSYMBOL (eg: NSE:INFY) or InstrumentToken (eg: 408065)</param>
         /// <returns>Dictionary with InstrumentId as key and LTP as value.</returns>
-        LTPResponse GetLTP(vector<std::string> instrumentIds)
+        LTPResponse Kite::GetLTP(vector<std::string> instrumentIds)
         {
             ParamType param;
             for (int idx = 0; idx < instrumentIds.size(); idx++)
@@ -657,13 +572,13 @@ namespace KiteConnect
         /// <param name="Continuous">Pass true to get continous data of expired instruments.</param>
         /// <param name="OI">Pass true to get open interest data.</param>
         /// <returns>List of Historical objects.</returns>
-        HistoricalResponse GetHistoricalData(
+        HistoricalResponse Kite::GetHistoricalData(
             std::string instrumentToken,
             DateTime fromDate,
             DateTime toDate,
             std::string interval,
-            bool continuous = false,
-            bool OI = false)
+            bool continuous,
+            bool OI)
         {
             ParamType param
             {
@@ -1054,14 +969,13 @@ namespace KiteConnect
         #endregion
 #endif
 //        #region HTTP Functions
-private:
         /// <summary>
         /// Alias for sending a GET request.
         /// </summary>
         /// <param name="Route">URL route of API</param>
         /// <param name="Params">Additional paramerters</param>
         /// <returns>Varies according to API endpoint</returns>
-        std::string Get(std::string route, ParamType params = {{}})
+        std::string Kite::Get(std::string route, ParamType params)
         {
             return Request(route, methods::GET, params);
         }
@@ -1072,7 +986,7 @@ private:
         /// <param name="Route">URL route of API</param>
         /// <param name="Params">Additional paramerters</param>
         /// <returns>Varies according to API endpoint</returns>
-        std::string Post(std::string route, ParamType params = {{}})
+        std::string Kite::Post(std::string route, ParamType params)
         {
             return Request(route, methods::POST, params);
         }
@@ -1083,7 +997,7 @@ private:
         /// <param name="Route">URL route of API</param>
         /// <param name="Params">Additional paramerters</param>
         /// <returns>Varies according to API endpoint</returns>
-        std::string Put(std::string route, ParamType Params = {{}})
+        std::string Kite::Put(std::string route, ParamType Params)
         {
             return Request(route, methods::PUT, Params);
         }
@@ -1094,7 +1008,7 @@ private:
         /// <param name="Route">URL route of API</param>
         /// <param name="Params">Additional paramerters</param>
         /// <returns>Varies according to API endpoint</returns>
-        std::string Delete(std::string route, ParamType Params)
+        std::string Kite::Delete(std::string route, ParamType Params)
         {
             return Request(route, methods::DEL, Params);
         }
@@ -1104,9 +1018,7 @@ private:
         /// </summary>
         /// <param name="Req">Request object to add headers</param>
 
-        private:
-
-        void AddExtraHeaders(http_request &request)
+        void Kite::AddExtraHeaders(http_request &request)
         {
             request.headers().add("User-Agent", USER_AGENT);
             request.headers().add("X-Kite-Version", "3");
@@ -1144,7 +1056,7 @@ private:
         /// <param name="Method">Method of HTTP request</param>
         /// <param name="Params">Additional paramerters</param>
         /// <returns>Varies according to API endpoint</returns>
-        std::string Request(std::string route, std::string method, ParamType params = {{}})
+        std::string Kite::Request(std::string route, std::string method, ParamType params)
         {
             std::string url = _root + _routes.at(route);
 
@@ -1303,6 +1215,5 @@ private:
         }
 
         //#endregion
-    };
 }
 

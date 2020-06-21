@@ -1,4 +1,6 @@
-﻿#include <string>
+﻿#pragma once
+
+#include <string>
 #include <exception>
 #include <cpprest/http_client.h> 
 #include <cpprest/filestream.h> 

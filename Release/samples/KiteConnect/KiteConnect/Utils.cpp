@@ -192,7 +192,7 @@ namespace KiteConnect
     /// <param name="Params">Dictionary to add the key-value pair</param>
     /// <param name="Key">Key of the parameter</param>
     /// <param name="Value">Value of the parameter</param>
-    inline void Utils::AddIfNotNull(ParamType& params, std::string key, std::string &value)
+    inline void Utils::AddIfNotNull(ParamType& params, std::string key, std::string value)
     {
         if (!value.empty())
             params.push_back(std::make_pair(key, value));
