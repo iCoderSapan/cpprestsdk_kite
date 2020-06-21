@@ -4,6 +4,8 @@ project(KiteConnectApp)
 set(TARGET KiteConnectApp)
 
 set(SOURCES
+    logging.cpp
+    logging.h
     Kite.cpp
     KiteTypes.h
     KiteTypes.cpp

@@ -24,6 +24,7 @@ using System.Reflection;
 #include "KiteTypes.h"
 #include "Utils.h"
 #include "Constants.h"
+#include "logging.h"
 
 #include <iomanip>
 #include <sstream>
@@ -62,7 +63,7 @@ namespace KiteConnect
 
             std::string _apiKey;
             std::string _accessToken;
-            bool _enableLogging;
+            logging log;
             web::web_proxy _proxy;
             std::chrono::seconds _timeout;
             shared_ptr<http_client> httpClient;

@@ -54,7 +54,7 @@ namespace KiteConnect
             if (!root.empty())
                 _root = root;
 
-            _enableLogging = debug;
+            log.SetLogging(debug);
 
             _proxy = proxy;
 
@@ -75,7 +75,7 @@ namespace KiteConnect
         /// <param name="enableLogging">Set to true to enable logging</param>
         void Kite::EnableLogging(bool enableLogging)
         {
-            _enableLogging = enableLogging;
+            log.SetLogging(enableLogging);
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace KiteConnect
         User Kite::GenerateSession(std::string RequestToken, std::string AppSecret)
         {
             std::string checksum = Utils::SHA256(_apiKey + RequestToken + AppSecret);
-
+            logging::Write(RequestToken);
             ParamType param{
                 {"api_key", _apiKey},
                 {"request_token", RequestToken},
@@ -1022,7 +1022,10 @@ namespace KiteConnect
         {
             request.headers().add("User-Agent", USER_AGENT);
             request.headers().add("X-Kite-Version", "3");
-            request.headers().add(header_names::authorization, "token " + _apiKey + ":" + _accessToken);
+            if(!_accessToken.empty()) {
+                logging::Write("AccessToken is present: " + _accessToken);
+                request.headers().add(header_names::authorization, "token " + _apiKey + ":" + _accessToken);
+            }
             /*
             var KiteAssembly = System.Reflection.Assembly.GetAssembly(typeof(Kite));
             if (KiteAssembly != "")
@@ -1060,6 +1063,7 @@ namespace KiteConnect
         {
             std::string url = _root + _routes.at(route);
 
+            logging::Write(url);
             if (url.find('{') != std::string::npos)
             {
                 if(params.size() == 0)
@@ -1073,68 +1077,42 @@ namespace KiteConnect
                         //params.erase(it);
                     }
                 }
-                /*
-                var urlparams = Params.ToDictionary(entry => entry.Key, entry => entry.Value);
-
-                foreach (KeyValuePair<std::string, dynamic> item in urlparams)
-                    if (url.Contains("{" + item.Key + "}"))
-                    {
-                        url = url.Replace("{" + item.Key + "}", (string)item.Value);
-                        Params.Remove(item.Key);
-                    }
-                    */
 
             }
 
-            //if (!Params.ContainsKey("api_key"))
-            //    Params.Add("api_key", _apiKey);
-
-            //if (!Params.ContainsKey("access_token") && !String.IsNullOrEmpty(_accessToken))
-            //    Params.Add("access_token", _accessToken);
             uri_builder paramEncoder;
             for (auto it=params.begin(); it!=params.end(); ++it) {
                     //std::cout << it->first << " => " << it->second << '\n';
                     paramEncoder.append_query(U(it->first), U(it->second));
             }
-            std::string paramString(paramEncoder.to_string().erase(2)); /*append_query() adds `/?` at the begining */
-            //HttpWebRequest request;
-            //string paramString = String.Join("&", Params.Select(x => Utils::BuildParam(x.Key, x.Value)));
+
             http_request webRequest(method);
             AddExtraHeaders(webRequest);
 
             if (method == methods::POST || method == methods::PUT)
             {
-                /*request = (HttpWebRequest)WebRequest.Create(url);
-                request.AllowAutoRedirect = true;
-                request.Method = Method;
-                request.ContentType = "application/x-www-form-urlencoded";
-                request.ContentLength = paramString.Length;
-                if (_enableLogging) Console.WriteLine("DEBUG: " + Method + " " + url + "\n" + paramString);
-                AddExtraHeaders(ref request);
-
-                using (Stream webStream = request.GetRequestStream())
-                using (StreamWriter requestWriter = new StreamWriter(webStream))
-                    requestWriter.Write(paramString);
-                */
-               webRequest.set_body(paramEncoder.to_string().erase(2),
-                                    mime_types::application_x_www_form_urlencoded);
+               webRequest.set_body(paramEncoder.to_string().erase(0,2), 
+                                   mime_types::application_x_www_form_urlencoded);
             }
             else
             {
-                //request = (HttpWebRequest)WebRequest.Create(url + "?" + paramString);
-                //request.AllowAutoRedirect = true;
-                //request.Method = Method;
-                //TODO if (_enableLogging) Console.WriteLine("DEBUG: " + Method + " " + url + "?" + paramString);
-                //AddExtraHeaders(ref request);
-                route = route+paramEncoder.to_string();
+                std::cout<<"url:"<<url<<"\n";
+                // With Params paramEnoder: /?key=val&key1=val1
+                // Without Param paramEncoder: ?/=
+                if (!params.empty())
+                {
+                    url = url + paramEncoder.to_string().erase(0,3);
+                }
             }
 
-            webRequest.set_request_uri(route);
+            logging::Write(url);
+            webRequest.set_request_uri(url);
 
             std::string body;
             std::string contentType;
             http::status_code status;
 
+            logging::Write(".......Debug.....");
             // Send request and wait for the response
             pplx::task<web::http::http_response> webResponse =  httpClient->request(webRequest);
 
@@ -1142,8 +1120,11 @@ namespace KiteConnect
                 //-- All Taskss will get triggered here 
                 webResponse.wait();
                 body = webResponse.get().extract_string().get();
-                contentType = http::details::mime_types::application_json;
+                logging::Write(body);
+                contentType = webResponse.get().headers().content_type();
+                logging::Write(contentType);
                 status = webResponse.get().status_code();
+                std::cout<<"status: "<<status<<std::endl;
                 std::cout<<"Response received:\n";
             }
             catch (const std::exception &e) {
@@ -1153,9 +1134,10 @@ namespace KiteConnect
             
             //TODO if (_enableLogging) Console.WriteLine("DEBUG: " + (int)((HttpWebResponse)webResponse).StatusCode + " " + response + "\n");
 
-
-            if (contentType == http::details::mime_types::application_json)
+            std::cout <<"content-types:" << contentType <<":" <<http::details::mime_types::application_json<<std::endl;
+            if (contentType.compare(http::details::mime_types::application_json) == 0)
             {
+                std::cout<<"Here Inside\n";
                 //Dictionary<std::string, dynamic> responseDictionary = Utils::JsonDeserialize(response);
                 if (status != http::status_codes::OK)
                 {
@@ -1211,7 +1193,7 @@ namespace KiteConnect
                 return body;
             else
                 throw std::runtime_error("Unexpected content type " + 
-                      webResponse.get().headers().content_type() + " " + body);
+                      webResponse.get().headers().content_type() + ">" + body);
         }
 
         //#endregion
