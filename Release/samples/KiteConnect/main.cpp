@@ -1,5 +1,5 @@
-#include "KiteConnect/KiteTypes.h"
-#include "KiteConnect/Kite.h"
+#include "KiteTypes.h"
+#include "Kite.h"
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -17,7 +17,7 @@ int main()
         std::ofstream access_token_file;
         access_token_file.open(ACCESS_TOKEN_FILE, ios::out | ios::in);
 
-        KiteConnect::User userDetails = mainObj.GenerateSession("LqCvoXxxGe6xdS7pMeP5ODRP1A45BTQe", API_SECRET);
+        KiteConnect::User userDetails = mainObj.GenerateSession("MDl8lgzr66mx32iPYeKHm45PI1UyGvOa", API_SECRET);
         mainObj.SetAccessToken(userDetails.accessToken);
         access_token_file << userDetails.accessToken;
         access_token_file.close();

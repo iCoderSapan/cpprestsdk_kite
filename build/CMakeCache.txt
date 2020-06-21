@@ -359,6 +359,12 @@ CPPREST_PPLX_IMPL:STRING=linux
 CPPREST_WEBSOCKETS_IMPL:STRING=wspp
 
 //Value Computed by CMake
+KiteConnectApp_BINARY_DIR:STATIC=/home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteConnect
+
+//Value Computed by CMake
+KiteConnectApp_SOURCE_DIR:STATIC=/home/sapan/Documents/trade/iCoderSapanGit/msrest/Release/samples/KiteConnect
+
+//Value Computed by CMake
 KiteConnect_BINARY_DIR:STATIC=/home/sapan/Documents/trade/iCoderSapanGit/msrest/build/Release/samples/KiteConnect
 
 //Value Computed by CMake
@@ -660,7 +666,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=32
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=31
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
